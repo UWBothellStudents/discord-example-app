@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import {
+  InteractionResponseFlags,
   InteractionType,
   InteractionResponseType,
   MessageComponentTypes,
