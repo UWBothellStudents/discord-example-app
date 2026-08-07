@@ -14,6 +14,16 @@ const TEST_BUTTON_COMMAND = {
   contexts: [0, 1, 2],
 };
 
+// Registering this command makes /test-modal available in Discord. Its runtime
+// behavior is implemented by command-handler.js and modal-handler.js.
+const TEST_MODAL_COMMAND = {
+  name: 'test-modal',
+  description: 'Show a modal form example',
+  type: 1,
+  integration_types: [0, 1],
+  contexts: [0, 1, 2],
+};
+
 // for reference, see https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure
 const CHALLENGE_COMMAND = {
   name: 'challenge',
@@ -40,4 +50,9 @@ const CHALLENGE_COMMAND = {
   ],
 };
 
-export const ALL_COMMANDS = [TEST_COMMAND, TEST_BUTTON_COMMAND, CHALLENGE_COMMAND];
+export const ALL_COMMANDS = [
+  TEST_COMMAND,
+  TEST_BUTTON_COMMAND,
+  TEST_MODAL_COMMAND,
+  CHALLENGE_COMMAND,
+];

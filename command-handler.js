@@ -6,8 +6,14 @@ import {
 } from 'discord-interactions';
 import { getRPSChoices } from './game.js';
 import { createGame } from './game-store.js';
+import { createTestModalResponse } from './modal-handler.js';
 import { getRandomEmoji } from './utils.js';
 
+/**
+ * Routes each application command to the code that builds its initial Discord
+ * response. Command definitions live separately in commands.js because Discord
+ * must register those definitions before users can invoke them.
+ */
 export function handleCommand(req, res) {
   const { id, data } = req.body;
   const { name } = data;
@@ -51,6 +57,12 @@ export function handleCommand(req, res) {
         ],
       },
     });
+  }
+
+  // A modal must be the command's immediate interaction response. Discord will
+  // send the completed form back later as a MODAL_SUBMIT interaction.
+  if (name === 'test-modal') {
+    return res.send(createTestModalResponse());
   }
 
   if (name === 'challenge' && id) {

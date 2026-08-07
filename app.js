@@ -7,6 +7,7 @@ import {
 } from 'discord-interactions';
 import { handleCommand } from './command-handler.js';
 import { handleComponent } from './component-handler.js';
+import { handleModalSubmit } from './modal-handler.js';
 
 // Create an express app
 const app = express();
@@ -22,7 +23,8 @@ app.get('/', (req, res) => {
  * Parse request body and verifies incoming requests using discord-interactions package
  */
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async function (req, res) {
-  // Interaction type and data
+  // Discord uses the interaction type to distinguish pings, slash commands,
+  // component clicks, modal submissions, and other interaction payloads.
   const { type } = req.body;
 
   /**
@@ -46,6 +48,14 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
    */
   if (type === InteractionType.MESSAGE_COMPONENT) {
     return handleComponent(req, res);
+  }
+
+  /**
+   * Handle forms submitted from Discord modals. Opening a modal happens in
+   * command-handler.js; the completed form returns as a new interaction here.
+   */
+  if (type === InteractionType.MODAL_SUBMIT) {
+    return handleModalSubmit(req, res);
   }
 
   console.error('unknown interaction type', type);
