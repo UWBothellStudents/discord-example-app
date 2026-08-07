@@ -19,7 +19,7 @@ Below is a basic overview of the project structure:
 
 ```
 ├── .vscode
-|   └──  launch.json  -> Lets you press **F5** in VS Code to run the bot with the debugger attached
+|   └──  launch.json  -> Lets you press F5 in VS Code to run the bot with the debugger attached
 ├── examples    -> Folder with more features.
 |   └── <see table below>
 ├── .env.sample -> sample .env file
