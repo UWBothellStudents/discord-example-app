@@ -1,4 +1,7 @@
-# Task #2: Moving From the Shared Setup to Your Own Branch, Codespace, and Bot
+# Task #2: Working in Parallel
+
+## Overview
+You will move from the shared setup environment to your own personal environment. 
 
 In Task #1 you all shared one Codespace, one bot, and one URL. That doesn't scale
 once multiple people are writing code at the same time — someone's `npm start`
@@ -6,14 +9,14 @@ will stomp on someone else's, and only one Interactions Endpoint URL can be
 registered at a time.
 
 From here on:
-- **Each student works on their own git branch**, in their own Codespace.
-- **Each student registers their own Discord Application** (own bot, own token,
-  own Interactions URL) — so you can develop and test independently without
+- Each student works on their own **Codespace instance**.
+- Each student works on their own **git branch** (that runs in their own Codespace).
+- Each student registers their own **Discord Application** (own bot, own token,
+  own Interactions URL). This is so you can develop and test independently without
   touching anyone else's setup.
-- **Everyone's test bot lives in the same team Discord server.** You're not
-  each creating a separate server. One server, multiple bots — like multiple
-  test accounts sharing one workspace.
-- **The Kanban board and repo stay exactly as they are.** No changes needed there.
+- Everyone's test bot lives in the **same team Discord server.** You're not
+  each creating a separate server. One server, multiple bots.
+- The Kanban board and repo **stay exactly as they are.** No changes needed there.
 
 ## One-time team setup (only one person does this)
 
@@ -24,6 +27,11 @@ From here on:
 
 Everything below this point, **each student does individually**, on their own
 branch.
+
+## Step 0: Create a Kanban Work Item
+Read the steps below to get an idea of what you'll create in this task. Create a new 
+Backlog item and add it to the Kanban board's backlog. Assign it to yourself and,
+as you make progress, track the work on the Kanban board.  
 
 ## Step 1: Create your branch
 
@@ -91,15 +99,8 @@ npm install
 npm run register
 npm start
 ```
-Same as before — `npm install` is only needed the first time in this Codespace;
+Same as before, `npm install` is only needed the first time in this Codespace;
 `npm start` should print `Listening on port 3000`.
-
-**Naming tip:** if you're testing a command that already exists on a
-teammate's bot (like `/test`), consider registering yours as something more
-specific — e.g. rename it in `commands.js` to `/test-yourname` while you're
-developing, so it's obvious in the shared server which bot's command you're
-triggering. You can rename it back before merging if the team wants a shared
-final command name.
 
 ## Step 6: Make your port public and set your Interactions URL
 
@@ -108,7 +109,11 @@ final command name.
 3. In **your** Discord Application's **General Information** page, paste the
    URL + `/interactions` into **Interactions Endpoint URL** and save.
 
-## Step 7: Test it
+## Step 7: Test with new command
+Create your own command `/test-<yourname>`.   
+1. Update the code in `apps.js` and `commands.js` to use your command. Code it up so that it responds with: `<yourname> has completed Task #2`.  
+2. Register your new set of commands.  
+3. Restart the bot service.
 
 In the shared team server, type `/` and find *your* bot's command in the
 list (it'll be tagged with your bot's name). Confirm it responds.
@@ -116,43 +121,33 @@ list (it'll be tagged with your bot's name). Confirm it responds.
 You're now fully isolated from your teammates — different branch, different
 Codespace, different bot, different URL. Code and test freely.
 
+> **Insights**: While it is common to frequently create and delete branches, in this project **KEEP** all your branches so that Stride can examine your individual work. **Never delete** any of your branches.
+
 ---
 
-# Merging your work into `main`
+## Step 8: Merge your work into `main`
 
-## 1. Commit and push to your branch as you go
-
-```bash
-git add .
-git commit -m "Add button interaction handler"
-git push
-```
-
-## 2. Open a Pull Request
+1. Commit and push to your branch to the origin
+2. Open a Pull Request
 
 On GitHub, open a PR from your branch into `main`. Have at least one teammate
-review it — this is a good moment to update the Kanban board card for the
+review it. this is a good moment to update the Kanban board card for the
 feature you were working on (move it to "In Review").
 
-## 3. Merge
+3. Merge
 
-Once approved, merge the PR into `main`. Delete the branch if your team wants
-to keep things tidy (GitHub will offer this automatically after merge).
+Once approved, merge the PR into `main`. **KEEP** your branch.
 
-## 4. Update the "official" bot running on `main`
+4. Update the "official" bot running on `main`
 
-Merging the code doesn't automatically restart anything — a Codespace (or
-whichever environment is running `main`'s code) needs to actually pick up the
-new code. Whoever maintains that instance (this could be the professor, or a
-designated team lead) needs to:
-
-```bash
-git checkout main
-git pull
-npm install        # only needed if package.json changed
-npm run register    # only needed if commands.js changed
-npm start            # restart to pick up code changes in app.js/utils.js
-```
+Merging the code doesn't automatically restart anything — the deployed Codespace instance
+(the environment running `main`'s code) needs to actually pick up the
+new code. Let's assume that all have permission to maintain/update that instance. You will
+need to:
+-  start the Codespace instance
+-  pull from main
+-  register the new commands, and
+-  restart the bot.
 
 A few things to watch for here:
 - If `commands.js` changed, you must re-run `npm run register`, or Discord's
@@ -161,19 +156,12 @@ A few things to watch for here:
   URL will change — remember to update **that** application's Interactions
   Endpoint URL in the Developer Portal, the same way you did for your personal
   bot in Step 6.
-- Decide as a team who "owns" this main-branch bot and Codespace, so it's
-  clear who's responsible for restarting/updating it after each merge, rather
-  than assuming someone else will.
+- Decide as a team how to coordinate updating the deployment Codespace instance. You don't want to clobber one another as the server is updated. Similarly, you don't want to assume that someone else will do the work for you.
+- For more complicated features added, you may need to `npm install` if `package.json` was updated with new Node packages.
 
-## 5. Your personal bot and Codespace
+5. Your personal bot and Codespace
 
 You don't need to delete your own bot, branch, or Codespace after merging —
 keep them around for your next feature. Just make sure to `git pull` the
 latest `main` into your branch before starting new work, so you're not
-building on stale code:
-```bash
-git checkout main
-git pull
-git checkout yourname-feature
-git merge main
-```
+building on stale code. However, you are free to create a new branch if you like. Once you have the Codespace referencing the code in your new branch, you'll simply need to stop & start the service. There is no need to create a new Codespace instance, nor a Discord App, as these can be reused.
