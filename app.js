@@ -12,6 +12,10 @@ import { getRandomEmoji } from './utils.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.get('/', (req, res) => {
+  res.send('Discord bot is running. Use /interactions for Discord callbacks.');
+});
+
 app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async function (req, res) {
   const { type, data } = req.body;
 

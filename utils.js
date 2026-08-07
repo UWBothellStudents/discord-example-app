@@ -1,10 +1,14 @@
 import 'dotenv/config';
 
+const DISCORD_API_BASE = 'https://discord.com/api/v10';
+
 export async function DiscordRequest(endpoint, options) {
   // append endpoint to root API URL
-  const url = 'https://discord.com/api/v10/' + endpoint;
+  const url = `${DISCORD_API_BASE}/${endpoint}`;
+
   // Stringify payloads
   if (options.body) options.body = JSON.stringify(options.body);
+
   // Use fetch to make requests
   const res = await fetch(url, {
     headers: {
@@ -14,12 +18,14 @@ export async function DiscordRequest(endpoint, options) {
     },
     ...options
   });
+
   // throw API errors
   if (!res.ok) {
     const data = await res.json();
     console.log(res.status);
     throw new Error(JSON.stringify(data));
   }
+  
   // return original response
   return res;
 }
