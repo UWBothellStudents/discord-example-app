@@ -49,3 +49,28 @@ export function getRandomEmoji() {
 export function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+export async function registerGlobalCommands(commands) {
+  const appId = process.env.DISCORD_APPLICATION_ID;
+
+  if (!appId) {
+    throw new Error('Missing DISCORD_APPLICATION_ID in .env');
+  }
+
+  try {
+    await DiscordRequest(`applications/${appId}/commands`, {
+      method: 'PUT',
+      body: commands,
+    });
+
+    console.log(
+      `Registered ${commands.length} command(s): ${commands.map((c) => c.name).join(', ')}`
+    );
+    console.log(
+      'Note: global commands can take up to an hour to appear the first time.'
+    );
+  } catch (err) {
+    console.error('Failed to register commands:', err.message);
+    process.exitCode = 1;
+  }
+}

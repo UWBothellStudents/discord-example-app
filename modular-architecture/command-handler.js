@@ -1,8 +1,8 @@
-import { handleCommand as handleChallenge } from './commands/challenge.js';
-import { handleCommand as handleTest } from './commands/test.js';
-import { handleCommand as handleTestButton } from './commands/test-button.js';
-import { handleCommand as handleTestModal } from './commands/test-modal.js';
-import { handleCommand as handleTestSelect } from './commands/test-select.js';
+import { handleCommand as handleChallenge } from '../commands/challenge.js';
+import { handleCommand as handleTest } from '../commands/test.js';
+import { handleCommand as handleTestButton } from '../commands/test-button.js';
+import { handleCommand as handleTestModal } from '../commands/test-modal.js';
+import { handleCommand as handleTestSelect } from '../commands/test-select.js';
 
 const commandHandlers = [
   handleTest,

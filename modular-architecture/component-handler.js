@@ -1,6 +1,6 @@
-import { handleComponent as handleChallengeComponent } from './commands/challenge.js';
-import { handleComponent as handleTestButtonComponent } from './commands/test-button.js';
-import { handleComponent as handleTestSelectComponent } from './commands/test-select.js';
+import { handleComponent as handleChallengeComponent } from '../commands/challenge.js';
+import { handleComponent as handleTestButtonComponent } from '../commands/test-button.js';
+import { handleComponent as handleTestSelectComponent } from '../commands/test-select.js';
 
 const componentHandlers = [
   handleTestButtonComponent,

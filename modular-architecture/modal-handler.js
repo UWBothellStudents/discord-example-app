@@ -1,4 +1,4 @@
-import { handleModalSubmit as handleTestModalSubmit } from './commands/test-modal.js';
+import { handleModalSubmit as handleTestModalSubmit } from '../commands/test-modal.js';
 
 const modalHandlers = [
   handleTestModalSubmit,
