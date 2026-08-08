@@ -1,4 +1,12 @@
-import { createTestModalResponse } from '../modal-handler.js';
+import {
+  InteractionResponseType,
+  MessageComponentTypes,
+} from 'discord-interactions';
+
+// These IDs connect the modal we send with the submission Discord returns.
+const TEST_MODAL_ID = 'test_modal';
+const SHORT_TEXT_ID = 'my_text';
+const LONG_TEXT_ID = 'my_longer_text';
 
 export const command = {
   name: 'test-modal',
@@ -11,5 +19,53 @@ export const command = {
 export function handleCommand(name) {
   if (name !== command.name) return;
 
-  return createTestModalResponse();
+  return {
+    type: InteractionResponseType.MODAL,
+    data: {
+      custom_id: TEST_MODAL_ID,
+      title: 'Modal title',
+      components: [
+        {
+          type: MessageComponentTypes.ACTION_ROW,
+          components: [
+            {
+              type: MessageComponentTypes.INPUT_TEXT,
+              custom_id: SHORT_TEXT_ID,
+              style: 1,
+              label: 'Type some text',
+            },
+          ],
+        },
+        {
+          type: MessageComponentTypes.ACTION_ROW,
+          components: [
+            {
+              type: MessageComponentTypes.INPUT_TEXT,
+              custom_id: LONG_TEXT_ID,
+              style: 2,
+              label: 'Type some (longer) text',
+            },
+          ],
+        },
+      ],
+    },
+  };
+}
+
+export function handleModalSubmit(modalId, req) {
+  if (modalId !== TEST_MODAL_ID) return;
+
+  const { data } = req.body;
+  const userId = req.body.member?.user?.id || req.body.user?.id;
+  const modalValues = data.components
+    .flatMap((actionRow) => actionRow.components)
+    .map((input) => `${input.custom_id}: ${input.value}`)
+    .join('\n');
+
+  return {
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data: {
+      content: `<@${userId}> typed the following (in a modal):\n\n${modalValues}`,
+    },
+  };
 }
