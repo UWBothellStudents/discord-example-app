@@ -103,6 +103,16 @@ function deleteGame(gameId) {
   delete activeGames[gameId];
 }
 
+function getWebhookEndpoint(req) {
+  const applicationId = process.env.DISCORD_APPLICATION_ID || process.env.APP_ID;
+
+  if (!applicationId) {
+    throw new Error('Missing Discord application ID. Set DISCORD_APPLICATION_ID in your environment.');
+  }
+
+  return `webhooks/${applicationId}/${req.body.token}/messages/${req.body.message.id}`;
+}
+
 export const command = {
   name: 'challenge',
   description: 'Challenge a user to rock paper scissors',
@@ -182,7 +192,7 @@ export function handleCommand(name, req) {
 export function handleComponent(componentId, req) {
   if (componentId.startsWith('accept_button_')) {
     const gameId = componentId.replace('accept_button_', '');
-    const endpoint = `webhooks/${process.env.APP_ID}/${req.body.token}/messages/${req.body.message.id}`;
+    const endpoint = getWebhookEndpoint(req);
 
     return {
       response: {
@@ -223,7 +233,7 @@ export function handleComponent(componentId, req) {
       id: respondingUserId,
       objectName,
     });
-    const endpoint = `webhooks/${process.env.APP_ID}/${req.body.token}/messages/${req.body.message.id}`;
+    const endpoint = getWebhookEndpoint(req);
 
     deleteGame(gameId);
 
