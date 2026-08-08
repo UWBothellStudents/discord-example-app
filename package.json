@@ -9,12 +9,10 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "start": "node app.js",
-    "register": "node register-commands.js",
-    "dev": "nodemon app.js"
+    "start": "node orig/app.js",
+    "register": "node orig/register-commands.js",
+    "dev": "nodemon orig/app.js"
   },
-  "author": "Shay DeWael",
-  "license": "MIT",
   "dependencies": {
     "discord-interactions": "^4.0.0",
     "dotenv": "^16.0.3",

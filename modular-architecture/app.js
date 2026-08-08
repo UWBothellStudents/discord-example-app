@@ -52,7 +52,8 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 
   /**
    * Handle forms submitted from Discord modals. Opening a modal happens in
-   * command-handler.js; the completed form returns as a new interaction here.
+   * commands/test-modal.js; modal-handler.js routes the completed form when it
+   * returns as a new interaction here.
    */
   if (type === InteractionType.MODAL_SUBMIT) {
     return handleModalSubmit(req, res);
