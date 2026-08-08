@@ -90,6 +90,48 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
       });
     }
 
+    // test-modal command
+    if (type === InteractionType.APPLICATION_COMMAND) {
+      // Slash command with name of "test"
+      if (data.name === 'test-modal') {
+        // Send a modal as response
+        return res.send({
+          type: InteractionResponseType.MODAL,
+          data: {
+            custom_id: 'my_modal',
+            title: 'Modal title',
+            components: [
+              {
+                // Text inputs must be inside of an action component
+                type: MessageComponentTypes.ACTION_ROW,
+                components: [
+                  {
+                    // See https://discord.com/developers/docs/interactions/message-components#text-inputs-text-input-structure
+                    type: MessageComponentTypes.INPUT_TEXT,
+                    custom_id: 'my_text',
+                    style: 1,
+                    label: 'Type some text',
+                  },
+                ],
+              },
+              {
+                type: MessageComponentTypes.ACTION_ROW,
+                components: [
+                  {
+                    type: MessageComponentTypes.INPUT_TEXT,
+                    custom_id: 'my_longer_text',
+                    // Bigger text box for input
+                    style: 2,
+                    label: 'Type some (longer) text',
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      }
+    }
+
     // "challenge" command
     if (name === 'challenge' && id) {
       // Interaction context
@@ -277,6 +319,32 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     return;
   }
 
+   /**
+   * Handle modal submissions
+   */
+  if (type === InteractionType.MODAL_SUBMIT) {
+    // custom_id of modal
+    const modalId = data.custom_id;
+    // user ID of member who filled out modal
+    const userId = req.body.member.user.id;
+
+    if (modalId === 'my_modal') {
+      let modalValues = '';
+      // Get value of text inputs
+      for (let action of data.components) {
+        let inputComponent = action.components[0];
+        modalValues += `${inputComponent.custom_id}: ${inputComponent.value}\n`;
+      }
+
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `<@${userId}> typed the following (in a modal):\n\n${modalValues}`,
+        },
+      });
+    }
+  }
+   
   console.error('unknown interaction type', type);
   return res.status(400).json({ error: 'unknown interaction type' });
 });

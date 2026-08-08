@@ -22,15 +22,24 @@ Below is a basic overview of the project structure:
 ```
 ├── .vscode
 |   └──  launch.json  -> Lets you press F5 in VS Code to run the bot with the debugger attached
-├── examples    -> Folder with more features.
+|
+├── commands                -> Folder with commands for the modular design
 |   └── <see table below>
-├── .env.sample -> sample .env file
-├── app.js      -> The Express server that receives and answers Discord interactions
-├── commands.js -> Defines what slash commands exist 
-├── utils.js    -> utility functions 
+|
+├── modular-architecture    -> Folder with a modular design for a bot
+|   └── <see table below>
+|
+├── orig            -> original implementation of the bot server
+|   ├── app.js      -> The Express server that receives and answers Discord with bot commands
+|   ├── commands.js -> Defines what slash commands exist 
+|   ├── game.js     -> helper functions for the Rock-Paper-Scissors game 
+|   └── register-commands.js     -> registers commands found in commands.js
+|
+├── .env.sample 
+├── .gitignore 
 ├── package.json -> the manifest file for a Node.js project      
 ├── README.md
-└── .gitignore
+└── utils.js    -> utility functions 
 ```
 
 | Examples File | Description |
