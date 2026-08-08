@@ -104,7 +104,7 @@ function deleteGame(gameId) {
 }
 
 function getWebhookEndpoint(req) {
-  const applicationId = process.env.DISCORD_APPLICATION_ID || process.env.APP_ID;
+  const applicationId = process.env.DISCORD_APPLICATION_ID;
 
   if (!applicationId) {
     throw new Error('Missing Discord application ID. Set DISCORD_APPLICATION_ID in your environment.');
