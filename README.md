@@ -24,13 +24,13 @@ Below is a basic overview of the project structure:
 |   └──  launch.json  -> Lets you press F5 in VS Code to run the bot with the debugger attached
 |
 ├── commands                -> Folder with commands for the modular design
-|   └── <see table below>
+|   └── <see README-task2>
 |
 ├── modular-architecture    -> Folder with a modular design for a bot
-|   └── <see table below>
+|   └── <see README-task2>
 |
 ├── orig            -> original implementation of the bot server
-|   ├── app.js      -> The Express server that receives and answers Discord with bot commands
+|   ├── app.js      -> The Express server that implements Discord bot commands
 |   ├── commands.js -> Defines what slash commands exist 
 |   ├── game.js     -> helper functions for the Rock-Paper-Scissors game 
 |   └── register-commands.js     -> registers commands found in commands.js
@@ -42,15 +42,6 @@ Below is a basic overview of the project structure:
 └── utils.js    -> utility functions 
 ```
 
-| Examples File | Description |
-| --- | --- |
-| app.js | A full interactive Discord example that handles commands, buttons, and select menus for a rock-paper-scissors-style game. |
-| button.js | A simple example that sends a message with a clickable button and responds when the button is pressed. |
-| command.js | A minimal example that registers and responds to a slash command. |
-| game.js | Contains the rock-paper-scissors game logic and helper functions for determining outcomes. |
-| modal.js | Demonstrates how to show a popup and process the data submitted by the user. |
-| selectMenu.js | Shows how to create a select menu and respond to the option a user chooses. |
-| utils.js | Provides shared helper functions for Discord API requests, emoji selection, and string capitalization. |
 
 ## Task #1 Steps
 This will help you setup your environment with sample code.  
