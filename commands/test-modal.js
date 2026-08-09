@@ -4,7 +4,7 @@ import {
 } from 'discord-interactions';
 
 // These IDs connect the modal we send with the submission Discord returns.
-const TEST_MODAL_ID = 'test_modal';
+export const TEST_MODAL_ID = 'test_modal';
 const SHORT_TEXT_ID = 'my_text';
 const LONG_TEXT_ID = 'my_longer_text';
 
@@ -16,9 +16,7 @@ export const command = {
   contexts: [0, 1, 2],
 };
 
-export function handleCommand(name) {
-  if (name !== command.name) return;
-
+export function handleCommand() {
   return {
     type: InteractionResponseType.MODAL,
     data: {
@@ -52,9 +50,7 @@ export function handleCommand(name) {
   };
 }
 
-export function handleModalSubmit(modalId, req) {
-  if (modalId !== TEST_MODAL_ID) return;
-
+export function handleModalSubmit(req) {
   const { data } = req.body;
   const userId = req.body.member?.user?.id || req.body.user?.id;
   const modalValues = data.components

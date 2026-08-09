@@ -1,31 +1,26 @@
-import { handleCommand as handleChallenge } from '../commands/challenge.js';
-import { handleCommand as handleTest } from '../commands/test.js';
-import { handleCommand as handleTestButton } from '../commands/test-button.js';
-import { handleCommand as handleTestModal } from '../commands/test-modal.js';
-import { handleCommand as handleTestSelect } from '../commands/test-select.js';
+import { command as challenge, handleCommand as handleChallenge } from '../commands/challenge.js';
+import { command as test, handleCommand as handleTest } from '../commands/test.js';
+import { command as testButton, handleCommand as handleTestButton } from '../commands/test-button.js';
+import { command as testModal, handleCommand as handleTestModal } from '../commands/test-modal.js';
+import { command as testSelect, handleCommand as handleTestSelect } from '../commands/test-select.js';
 
-const commandHandlers = [
-  handleTest,
-  handleTestButton,
-  handleTestSelect,
-  handleTestModal,
-  handleChallenge,
-];
+const commandHandlers = {
+  [test.name]: handleTest,
+  [testButton.name]: handleTestButton,
+  [testSelect.name]: handleTestSelect,
+  [testModal.name]: handleTestModal,
+  [challenge.name]: handleChallenge,
+};
 
 /**
- * Passes an application command to each command module until one handles it.
- * Command handlers return a Discord response object, or undefined when the
- * command name does not belong to them.
+ * Uses the command name to look up its handler directly.
  */
 export function handleCommand(req, res) {
   const { name } = req.body.data;
+  const commandHandler = commandHandlers[name];
 
-  for (const commandHandler of commandHandlers) {
-    const response = commandHandler(name, req);
-
-    if (response) {
-      return res.send(response);
-    }
+  if (commandHandler) {
+    return res.send(commandHandler(req));
   }
 
   console.error(`unknown command: ${name}`);

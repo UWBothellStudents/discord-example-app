@@ -6,6 +6,9 @@ import {
 } from 'discord-interactions';
 import { capitalize, DiscordRequest, getRandomEmoji } from '../utils.js';
 
+export const ACCEPT_BUTTON_PREFIX = 'accept_button_';
+export const SELECT_CHOICE_PREFIX = 'select_choice_';
+
 const activeGames = {};
 
 const RPSChoices = {
@@ -138,9 +141,7 @@ export const command = {
   ],
 };
 
-export function handleCommand(name, req) {
-  if (name !== command.name) return;
-
+export function handleCommand(req) {
   const { id, data } = req.body;
   const userId = req.body.member?.user?.id || req.body.user?.id;
   const option = data.options?.[0];
@@ -178,7 +179,7 @@ export function handleCommand(name, req) {
           components: [
             {
               type: MessageComponentTypes.BUTTON,
-              custom_id: `accept_button_${id}`,
+              custom_id: `${ACCEPT_BUTTON_PREFIX}${id}`,
               label: 'Accept',
               style: ButtonStyleTypes.PRIMARY,
             },
@@ -190,8 +191,8 @@ export function handleCommand(name, req) {
 }
 
 export function handleComponent(componentId, req) {
-  if (componentId.startsWith('accept_button_')) {
-    const gameId = componentId.replace('accept_button_', '');
+  if (componentId.startsWith(ACCEPT_BUTTON_PREFIX)) {
+    const gameId = componentId.replace(ACCEPT_BUTTON_PREFIX, '');
     const endpoint = getWebhookEndpoint(req);
 
     return {
@@ -209,7 +210,7 @@ export function handleComponent(componentId, req) {
               components: [
                 {
                   type: MessageComponentTypes.STRING_SELECT,
-                  custom_id: `select_choice_${gameId}`,
+                  custom_id: `${SELECT_CHOICE_PREFIX}${gameId}`,
                   options: getShuffledOptions(),
                 },
               ],
@@ -221,8 +222,8 @@ export function handleComponent(componentId, req) {
     };
   }
 
-  if (componentId.startsWith('select_choice_')) {
-    const gameId = componentId.replace('select_choice_', '');
+  if (componentId.startsWith(SELECT_CHOICE_PREFIX)) {
+    const gameId = componentId.replace(SELECT_CHOICE_PREFIX, '');
     const game = getGame(gameId);
 
     if (!game) return;

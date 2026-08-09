@@ -1,23 +1,21 @@
-import { handleModalSubmit as handleTestModalSubmit } from '../commands/test-modal.js';
+import {
+  handleModalSubmit as handleTestModalSubmit,
+  TEST_MODAL_ID,
+} from '../commands/test-modal.js';
 
-const modalHandlers = [
-  handleTestModalSubmit,
-];
+const modalHandlers = {
+  [TEST_MODAL_ID]: handleTestModalSubmit,
+};
 
 /**
- * Passes a modal submission to each command module until one handles it.
- * Modal handlers return a Discord response object, or undefined when the
- * modal custom ID does not belong to them.
+ * Uses the modal custom ID to look up its handler directly.
  */
 export function handleModalSubmit(req, res) {
   const modalId = req.body.data.custom_id;
+  const modalHandler = modalHandlers[modalId];
 
-  for (const modalHandler of modalHandlers) {
-    const response = modalHandler(modalId, req);
-
-    if (response) {
-      return res.send(response);
-    }
+  if (modalHandler) {
+    return res.send(modalHandler(req));
   }
 
   console.error(`unknown modal: ${modalId}`);

@@ -13,9 +13,7 @@ export const command = {
   contexts: [0, 1, 2],
 };
 
-export function handleCommand(name) {
-  if (name !== command.name) return;
-
+export function handleCommand() {
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {

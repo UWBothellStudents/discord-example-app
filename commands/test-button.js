@@ -5,6 +5,8 @@ import {
   MessageComponentTypes,
 } from 'discord-interactions';
 
+export const BUTTON_COMPONENT_ID = 'my_button';
+
 export const command = {
   name: 'test-btn',
   description: 'Show a button example',
@@ -13,9 +15,7 @@ export const command = {
   contexts: [0, 1, 2],
 };
 
-export function handleCommand(name) {
-  if (name !== command.name) return;
-
+export function handleCommand() {
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
@@ -30,7 +30,7 @@ export function handleCommand(name) {
           components: [
             {
               type: MessageComponentTypes.BUTTON,
-              custom_id: 'my_button',
+              custom_id: BUTTON_COMPONENT_ID,
               label: 'Click',
               style: ButtonStyleTypes.PRIMARY,
             },
@@ -42,8 +42,6 @@ export function handleCommand(name) {
 }
 
 export function handleComponent(componentId, req) {
-  if (componentId !== 'my_button') return;
-
   const userId = req.body.member?.user?.id || req.body.user?.id;
 
   return {

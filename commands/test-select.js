@@ -4,6 +4,8 @@ import {
   MessageComponentTypes,
 } from 'discord-interactions';
 
+export const SELECT_COMPONENT_ID = 'test_select';
+
 export const command = {
   name: 'test-select',
   description: 'Show a select menu example',
@@ -12,9 +14,7 @@ export const command = {
   contexts: [0, 1, 2],
 };
 
-export function handleCommand(name) {
-  if (name !== command.name) return;
-
+export function handleCommand() {
   return {
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     data: {
@@ -29,7 +29,7 @@ export function handleCommand(name) {
           components: [
             {
               type: MessageComponentTypes.STRING_SELECT,
-              custom_id: 'test_select',
+              custom_id: SELECT_COMPONENT_ID,
               options: [
                 {
                   label: 'Option #1',
@@ -51,8 +51,6 @@ export function handleCommand(name) {
 }
 
 export function handleComponent(componentId, req) {
-  if (componentId !== 'test_select') return;
-
   const selectedOption = req.body.data.values?.[0];
   const userId = req.body.member?.user?.id || req.body.user?.id;
 
