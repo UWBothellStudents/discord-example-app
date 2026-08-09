@@ -133,19 +133,29 @@ There are a few things worth explaining:
 **The final update goes to *both* browsers from one bot response.** The bot doesn't send two separate messages. The bot sends one updated message object back to Discord Server, and Discord Server broadcasts that render to everyone viewing the channel, including both users. 
 
 ## JSON
-JSON stands for JavaScript Object Notation. There are files that have a `json` extension whose sole purpose is to define an object using this notation.  
+JSON (JavaScript Object Notation) is a text format for exchanging structured data. It may be stored in a `.json` file or sent in an HTTP request or response. Despite its name, JSON is language-independent.
 
-The basics of a JSON object are the following:  
-* There are the following types: an object, array, name/value pair, number, string    
-* An object is defined with { braces }  
-* An array is defined with [ brackets ]. Each item in an array is separated by a comma.    
-* The content of an object is a seried of name/value pairs.  
-* A name/value pair take the form "name":value  
-* A value can be any of any type   
+JSON supports six value types: **object**, **array**, **string**, **number**, **Boolean** (`true` or `false`), and **null**.
 
-In JavaScript files (`.js`) there are some extensions to the notation found in json files.  
-* If there is no "name", then the *value* is used as the *name*.  
-* Names don't always need to be in quotes.  
+- Objects use braces and contain comma-separated name/value pairs: `{ "name": "Ada" }`.
+- Arrays use brackets and contain comma-separated values: `["rock", "paper", "scissors"]`.
+- Object names and string values require double quotes.
+- JSON does not support comments, trailing commas, `undefined`, functions, or JavaScript template literals.
+
+For example, Discord can receive this JSON response and display its `content` as a message:
+
+```json
+{
+  "type": 4,
+  "data": {
+    "content": "Hello from the bot!"
+  }
+}
+```
+
+The bot code usually creates the response as a **JavaScript object literal**, such as `commands/test.js` does, and Express serializes it as JSON when `res.send(...)` sends the HTTP response. JavaScript object literals resemble JSON but allow features JSON does not, including unquoted property names, single-quoted strings, constants, expressions, and shorthand properties. For example, if a variable named `content` exists, `{ content }` is shorthand for `{ content: content }`.
+
+Reference: [MDN: Working with JSON](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON)
 
 
 # Footnotes
