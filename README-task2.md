@@ -229,14 +229,44 @@ Here is a sketch of an architecture where there is load balancer across multiple
 ![Load Balancing Sketch](resources/discord_memory_arch.png)
 
 # Q & A
-1. Explain how the network architecture is identical while the code's design can be radically changed from it's original mess (in `orig`) to the modular design (in `modular-architecture`).  
+### 1. How can the bot's external network architecture remain the same while its internal code design changes from `orig` to `modular-architecture`?
 
-2. Point to the code where we can see a module.  
+In both versions, the network path is the same: a Discord client causes Discord's servers to send an HTTPS request to the bot's `/interactions` endpoint, and the bot sends an HTTP response back to Discord. The same systems communicate over the same protocol; only the organization inside the bot changes.
 
-3. Explain the flow of execution for handling the `/test` command. What methods are invoked? In the explanation, use the terms: dispatch, module, request, response, JSON.  
+In `orig/app.js`, routing and most feature logic share one large file. In the modular design, `modular-architecture/app.js` routes interaction types, the dispatcher files select handlers, and each file in `commands/` contains the logic for one feature. This internal refactoring improves cohesion and reduces coupling without changing the bot's public endpoint or Discord's role.
 
-4. Explain how a lot of the bot code is the creation of JSON objects. Point out a place in the code where an object is created.  
+### 2. Where can we see a module in the code?
 
-5. Explain the relationship between Node, Express Server, and npm.  
+`commands/test.js` is an ES module and a feature module. It imports values with `import` and exports two related parts of the `/test` feature:
 
-6. 
+- `command`: the definition Discord registers.
+- `handleCommand()`: the behavior that runs when someone uses `/test`.
+
+> Note: An **ES module** (ECMAScript module) is a JavaScript file that explicitly controls what it shares with other files using `export`, and what it receives using `import`.  
+
+`modular-architecture/command-handler.js` imports those exports. This demonstrates a module's boundary: it exposes selected values while keeping the feature's implementation in its own file.
+
+### 3. What is the execution flow for the `/test` command?
+Here is a very detailed trace:  
+1. Discord sends a POST **request** containing an interaction payload to `/interactions`.
+2. `verifyKeyMiddleware(...)` verifies the request, and Express makes the parsed body available as `req.body`.
+3. The route in `modular-architecture/app.js` sees `InteractionType.APPLICATION_COMMAND` and calls `handleCommand(req, res)` from `command-handler.js`.
+4. That function reads `req.body.data.name`. For the name `test`, it **dispatches** execution to `handleTest`, imported from the `commands/test.js` **module**.
+5. `handleTest()` calls `getRandomEmoji()` and returns a JavaScript object describing a Discord message.
+6. The dispatcher passes that object to `res.send(...)`. Express serializes it as **JSON** in the HTTP **response**, and Discord renders the message.
+
+**In short:** `app.js` dispatches by interaction type, `command-handler.js` dispatches by command name, and `commands/test.js` supplies the feature-specific response.
+
+### 4. Where does the bot create data that becomes JSON?
+
+Much of the bot constructs JavaScript objects that Express or `JSON.stringify()` later serializes into JSON. For example, `handleCommand()` in `commands/test.js` returns an object with `type` and `data` properties. Its nested `components` array describes the message Discord should display.
+
+The object literal is not itself JSON because it contains JavaScript constants, a function call, a template literal, and unquoted property names. It becomes JSON when `command-handler.js` passes it to `res.send(...)`. Another explicit example is `utils.js`, where `JSON.stringify(options.body)` converts a JavaScript value into JSON before sending a request to Discord's API.
+
+### 5. What is the relationship between Node.js, Express, and npm?
+
+- **Node.js** is the runtime that executes the JavaScript bot outside a browser.
+- **Express** is a web framework that runs on Node.js. It defines routes such as `POST /interactions` and provides the `req` and `res` objects used to handle HTTP traffic.
+- **npm** is Node's package manager and script runner. It installs Express and the other dependencies listed in `package.json`; commands such as `npm start` run the associated Node command from the `scripts` section.
+
+Together, npm prepares and starts the project, Node executes it, and Express handles its web-server responsibilities.
