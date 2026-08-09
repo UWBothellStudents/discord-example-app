@@ -7,7 +7,7 @@ You should have a very simple Discord bot working. Now you will explore the code
 * Analyze the architecture and design of your Discord bot.  
 
 **Deliverables:**  
-* Two snapshots of the Work Items tracking work in the Kanban board.  
+* Two snapshots of the Kanban board with Work Items tracking work.  
 * A set of **hand-drawn** diagrams of the architecture. Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits one of the of the following:  
    - [Data flow diagram (DFD)](https://en.wikipedia.org/wiki/Data-flow_diagram)  
    - [Activity diagram](https://en.wikipedia.org/wiki/Activity_diagram)  
@@ -18,9 +18,9 @@ You should have a very simple Discord bot working. Now you will explore the code
 
 **The goals are:**  
 * Understand Discord bot coding a bit better  
-   - What are HTTP requests and responses  
-   - What is an Express Server and how is it used in our implementation   
-   - What is JSON and how does that play a role  
+   - What are HTTP requests and responses?  
+   - What is an Express Server and how is it used in our implementation?   
+   - What is JSON and how does that play a role?  
 * Adopt a feature-based, modular organization with co-located command logic to make the bot more extensible  
 * Explain design terms and point to specific code that correlates  
 
@@ -270,3 +270,26 @@ The object literal is not itself JSON because it contains JavaScript constants, 
 - **npm** is Node's package manager and script runner. It installs Express and the other dependencies listed in `package.json`; commands such as `npm start` run the associated Node command from the `scripts` section.
 
 Together, npm prepares and starts the project, Node executes it, and Express handles its web-server responsibilities.
+
+### 6. What is the difference between registering a command and handling a command?
+
+**Registration** tells Discord that a command exists and describes its name, options, and other metadata. After the `package.json` scripts are switched to the modular architecture as described earlier, running `npm run register` starts `modular-architecture/register-commands.js`. That script gets the definitions collected in `ALL_COMMANDS` and sends them to Discord's API. Registration is needed after adding or changing a command definition, but it does not start the bot server.
+
+**Handling** happens later, whenever a user invokes a registered command. Discord sends an interaction request to the running server, and `app.js` plus `command-handler.js` route it to the appropriate command module. With the same script change in place, `npm start` starts the modular server. Registration defines the interface; handling implements its behavior.
+
+### 7. What is middleware, and why does this bot use `verifyKeyMiddleware`?
+
+Middleware is code that runs during request processing before the final route handler completes its work. The `/interactions` route uses `verifyKeyMiddleware(process.env.PUBLIC_KEY)` to verify the cryptographic signature Discord attaches to each interaction request.
+
+If verification succeeds, processing continues and the handler can read `req.body`. If it fails, the request is rejected before any command logic runs. This prevents an unauthenticated sender from pretending to be Discord and invoking the bot's interaction endpoint. The public key is loaded from an environment variable so deployment-specific configuration is not hard-coded into the source.
+
+### 8. How does the modular design route button, select-menu, and modal interactions?
+
+A component click or modal submission is a new HTTP request, not a continuation of the slash-command function. `app.js` first dispatches by interaction type:
+
+- `MESSAGE_COMPONENT` goes to `component-handler.js`.
+- `MODAL_SUBMIT` goes to `modal-handler.js`.
+
+These dispatchers read the interaction's `custom_id` and use it to select a handler imported from a command module. For example, `component-handler.js` maps `BUTTON_COMPONENT_ID` to the component handler in `commands/test-button.js`. Some challenge IDs contain changing context, so the dispatcher can match an ID prefix instead of requiring an exact match.
+
+This design keeps shared routing centralized while co-locating each feature's behavior in its command module. It also shows why `custom_id` values must be unique and stable enough for the dispatcher to recognize them.
