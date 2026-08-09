@@ -3,13 +3,26 @@
 ## Overview
 You should have a very simple Discord bot working. Now you will explore the code found the in `commands` and `module-architecture` folders.  
 
-The goals are:  
+**Task:** 
+* Analyze the architecture and design of your Discord bot.  
+
+**Deliverables:**  
+* Two snapshots of the Work Items tracking work in the Kanban board.  
+* A set of **hand-drawn** diagrams of the architecture. Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits one of the of the following:  
+   - [Data flow diagram (DFD)](https://en.wikipedia.org/wiki/Data-flow_diagram)  
+   - [Activity diagram](https://en.wikipedia.org/wiki/Activity_diagram)  
+   - [Sequence diagram](https://en.wikipedia.org/wiki/Sequence_diagram) 
+   - [System context diagram](https://en.wikipedia.org/wiki/System_context_diagram)   
+   - [Network diagram](https://en.wikipedia.org/wiki/Computer_network_diagram) 
+
+
+**The goals are:**  
 * Understand Discord bot coding a bit better  
    - What are HTTP requests and responses  
    - What is an Express Server and how is it used in our implementation   
    - What is JSON and how does that play a role  
-* Move to a feature-based, modular organization with co-located command logic to make the bot more extensible  
-* Explain and correlate design terms to specific code  
+* Adopt a feature-based, modular organization with co-located command logic to make the bot more extensible  
+* Explain design terms and point to specific code that correlates  
 
 The bot has been be refactored from a monolithic interaction handler into a modular, feature-based architecture. With the changes, each slash command will encapsulate (or co-locate) its command definition, command handler, component handlers, modal handlers, and command-specific state or business logic in a dedicated module (file). Central dispatchers route incoming Discord interactions to the appropriate command module.
 
@@ -67,8 +80,9 @@ A Discord bot isn't really a program that "runs inside Discord." It's a separate
 
 ### Step 1: Something happens in Discord (the Interaction)
 
-A user does something interactive — types a slash command, clicks a button, picks from a dropdown, or submits a form (a "modal"). Discord packages that event as an **Interaction** and sends it as an HTTP POST request to your bot's server. That's where your `InteractionType` values come in:
+A user does something interactive such as typing in a slash command, clicking a button, picking from a dropdown, or submiting a form (a "modal"). Discord packages that event as an **Interaction** and sends it as an HTTP POST request to your bot's server. That's where your `InteractionType` values come in:
 
+**Interaction Types:**  
 - `APPLICATION_COMMAND` — someone ran a slash command (like `/roll dice`)
 - `MESSAGE_COMPONENT` — someone clicked a button or used a select menu attached to a message
 - `MODAL_SUBMIT` — someone filled out and submitted a popup form
@@ -79,16 +93,18 @@ Each of these arrives with a payload describing exactly what happened: which com
 
 This is the actual "coding" part. Your server reads the interaction type and any relevant IDs (like a `custom_id` on a button) and runs whatever logic you wrote — roll a die, look something up in a database, start a game, whatever.
 
-### Step 3: Your bot responds — but the response *is* the UI
+## Step 3: Your bot responds — with instructions for what to display
 
-Here's the part that trips people up: your HTTP response isn't just "success/fail." It's a structured JSON object with a **response type** and **data**, and that JSON *is* the next thing users see in Discord. You're not writing a chat message like a person — you're returning a specification that Discord's client renders for you. Common response types include:
+Here's the part that trips people up: your HTTP response isn't just "success/fail." It's a structured JSON object made up of a **response type** and **data**. The user never sees this JSON directly. The JSON is effectively a set of instructions telling Discord's client *what to display and how*. Discord reads that object and renders the actual message, embed, or form on the user's screen.
+
+You're not writing a chat message the way a person would. You're describing, in a format Discord understands, what the outcome should look like. Discord's client is the one that turns your description into pixels and actions. Common response types include:
 
 - Reply with a message (text, embeds, buttons, etc.)
 - Show a modal (popup form)
 - Acknowledge silently and update later (useful for slow operations)
 - Update the existing message (e.g., after a button click)
 
-Discord takes that JSON, renders it according to its own UI rules, and every user in the channel sees the result — a message, buttons, an embed, whatever you specified.
+Once Discord receives that object, it renders it according to its own UI rules, and every user in the channel sees the resulting message, buttons, or embed<sup>[1]</sup> — never the underlying JSON itself.
 
 Here is a simple visual of that request/response cycle.  
 ![Discord overview](resources/discord_overview.png)
@@ -99,8 +115,88 @@ Here is a simple visual of that request/response cycle.
 Each interaction is its own HTTP request. There's no persistent "conversation" the way a chat feels — every button click or command is a fresh POST with everything the bot needs to know packed into the payload (who clicked, what they clicked, in what channel).
 
 **Timing matters**  
-Discord expects a response within 3 seconds, or it shows "This interaction failed." If the bot needs to do something slow (call an API, query a database), it first sends an "I got it, working on it" acknowledgment, then follows up with the real content once it's ready. This is an example of *acknowledge now, respond later*.
+Discord expects a response within 3 seconds, or it shows "This interaction failed." If the bot needs to do something slow (call slow API, query a distant database, generate a report), it first sends an "I got it, working on it" acknowledgment, then follows up with the real content once it's ready. This is an example of *acknowledge now, respond later*.
 
 **`custom_id` is how buttons/menus "remember" context**  
 Since HTTP requests don't carry memory, developers embed identifying info directly into a button's `custom_id` (e.g. `"delete_task_42"`) so that when it's clicked, the bot can parse that string back out and know exactly what to do. There is no database lookup required for simple cases.
+
+## Rock-Paper-Scissors Sequence
+To help explain 
+![Rock Paper Scissors Squence Diagram](resources/discord-rps-sequence.png)
+
+There are a few things worth explaining:
+
+**How does User #2's choice stay hidden from User #1?** This is the trickiest part of the game design. When User #2 clicks "Accept," the bot doesn't just reveal a text box — it typically responds with an **ephemeral**<sup>[2]</sup> message (a response only the clicking user can see) containing buttons or a dropdown for rock/paper/scissors. This is a meaningful Discord feature worth noting: response data can include a flag that makes a message private to just one user, which is exactly how you'd keep a "secret choice" secret in a public channel.
+
+**Why two separate interactions?** Notice the diagram has two full round trips — one for the initial slash command, one for the accept/choice. Each is its own independent HTTP request/response cycle. The bot has to persist the game state (who challenged, their hidden choice) somewhere between those two requests, since nothing carries over automatically. Servers can store temporary state (in memory, a database, or a cache) between interactions.<sup>[3]</sup>
+
+**The final update goes to *both* browsers from one bot response.** The bot doesn't send two separate messages. The bot sends one updated message object back to Discord Server, and Discord Server broadcasts that render to everyone viewing the channel, including both users. 
+
+## Footnotes
+[1] An **embed** is a richer, more structured message format in Discord — the kind you've probably seen without knowing the name: a box with a colored left border, maybe a title, a description, separate labeled fields, a thumbnail image, a footer, sometimes a big image at the bottom. Bot status messages, music "now playing" cards, and error notices with red borders are almost always embeds.
+
+Structurally, it's just another piece of data in that JSON response object — instead of (or alongside) plain text, you include an `embeds` array with fields like:
+
+```json
+{
+  "title": "Task Created",
+  "description": "Your task has been added to the board.",
+  "color": 3066993,
+  "fields": [
+    { "name": "Assigned to", "value": "@alice", "inline": true },
+    { "name": "Due date", "value": "Aug 15", "inline": true }
+  ],
+  "footer": { "text": "Task Bot" }
+}
+```
+
+Discord takes that structured data and lays it out visually as a formatted card. It's the same underlying idea as the response type/data pattern you already have in your notes — embeds are just one specific *shape* of data your bot can send, useful whenever you want something more organized-looking than a plain sentence of text.
+
+It is interesting to note that "data describing what to display" can range from a single line of text all the way up to a fairly complex visual layout, and Discord handles all the rendering either way.
+
+[2] **Ephemeral Message**:  
+An ephemeral message is a normal interaction response with one extra piece of data attached: a message **flag**. Instead of posting to the channel for everyone, it's rendered only in the view of the user who triggered the interaction, everyone else in the channel never sees it, and it doesn't persist in the channel's message history the way a regular message does.
+
+Technically, it works exactly like the response object we've been discussing; it has the same `type` and `data` structure except the `data` includes a `flags` field with the value 64 (the EPHEMERAL flag, expressed as 1 << 6). Discord's client reads that flag and decides to render the message privately instead of publicly.
+
+A few practical notes:
+
+- It's not encryption or a security boundary. An ephemeral flag is a *rendering instruction*. The bot server and Discord both technically have the data; it's just not displayed to other channel members.  
+- Ephemeral responses are commonly used for exactly the kind of thing in the Rock-Paper-Scissors example: letting one user privately pick an option (or see an error message) without leaking it to everyone else in the channel.  
+- If a bot defers its response first, that deferral can also be marked ephemeral. So even a "thinking…" placeholder can stay private if you want the whole interaction hidden from the start.  
+
+References:  
+[Receiving and Responding to Interactions](https://docs.discord.com/developers/interactions/receiving-and-responding)   
+Official Discord Developer documentation covering interaction response types and the EPHEMERAL message flag.
+
+[Command response methods](https://discordjs.guide/slash-commands/response-methods)  
+This Discord.js Guid shows how to send an ephemeral reply in code, with a before/after example of what users see.  
+
+[MessageFlags enum reference](https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageFlags)  
+Full list of message flags, including Ephemeral and others like Loading and IsComponentsV2.
+
+[3] **Remembering stuff on a Server**  
+
+When we said the bot needs to "remember" something between interactions (like a pending Rock-Paper-Scissors challenge), we glossed over an important question:  
+
+> Remember it *where*?   
+
+The answer depends heavily on how the bot server is deployed, not just on the data itself.  
+
+Here is the takeaway worth stating explicitly:  
+> The "right" storage choice isn't a fact about the data — it's a fact about the deployment.  
+
+ The exact same "remember this pending game" requirement has a different correct answer depending on whether you're running a single bot process on your laptop (in-memory is fine) or a production bot scaled across multiple instances behind a load balancer (in-memory silently breaks, and you need shared storage). Here we present a good real-world example of how architecture constraints shape what would otherwise be a simple coding decision.  
+
+1. *In-memory (a variable or object in your running program)*:  
+The simplest option — fast, no setup, easy to reason about for a class project. But it only works if there's exactly one instance of your bot process running, and that process doesn't restart. Real-world bots are often deployed with multiple instances behind a load balancer for reliability and scale — and that breaks in-memory storage immediately, because the request that creates the challenge might land on Instance A, while the "accept" click later gets routed to Instance B, which has no idea the challenge exists.
+
+2. *Database (e.g. Postgres, MongoDB)*:  
+Durable and shared across every instance. Good for data that needs to survive a server restart or matters long-term (user stats, leaderboards, settings). The tradeoff is speed — a database round trip is slower than reading a local variable, and you're now managing schemas, connections, and persistence logic.
+
+3. *Cache (e.g. [Redis](https://en.wikipedia.org/wiki/Redis))*:  
+A middle ground: shared across instances like a database, but built for short-lived, fast-access data. Great fit for something like a pending game challenge where data only needs to live for a few minutes and doesn't need to survive forever. Many production Discord bots use Redis for exactly this kind of temporary interaction state.
+
+Here is a sketch of an architecture where there is load balancer across multiple server instances providing services for a single Discord Bot. These details change everything:  
+![Load Balancing Sketch](resources/discord_memory_arch.png)
 
