@@ -132,7 +132,23 @@ There are a few things worth explaining:
 
 **The final update goes to *both* browsers from one bot response.** The bot doesn't send two separate messages. The bot sends one updated message object back to Discord Server, and Discord Server broadcasts that render to everyone viewing the channel, including both users. 
 
-## Footnotes
+## JSON
+JSON stands for JavaScript Object Notation. There are files that have a `json` extension whose sole purpose is to define an object using this notation.  
+
+The basics of a JSON object are the following:  
+* There are the following types: an object, array, name/value pair, number, string    
+* An object is defined with { braces }  
+* An array is defined with [ brackets ]. Each item in an array is separated by a comma.    
+* The content of an object is a seried of name/value pairs.  
+* A name/value pair take the form "name":value  
+* A value can be any of any type   
+
+In JavaScript files (`.js`) there are some extensions to the notation found in json files.  
+* If there is no "name", then the *value* is used as the *name*.  
+* Names don't always need to be in quotes.  
+
+
+# Footnotes
 [1] An **embed** is a richer, more structured message format in Discord — the kind you've probably seen without knowing the name: a box with a colored left border, maybe a title, a description, separate labeled fields, a thumbnail image, a footer, sometimes a big image at the bottom. Bot status messages, music "now playing" cards, and error notices with red borders are almost always embeds.
 
 Structurally, it's just another piece of data in that JSON response object — instead of (or alongside) plain text, you include an `embeds` array with fields like:
@@ -200,3 +216,15 @@ A middle ground: shared across instances like a database, but built for short-li
 Here is a sketch of an architecture where there is load balancer across multiple server instances providing services for a single Discord Bot. These details change everything:  
 ![Load Balancing Sketch](resources/discord_memory_arch.png)
 
+# Q & A
+1. Explain how the network architecture is identical while the code's design can be radically changed from it's original mess (in `orig`) to the modular design (in `modular-architecture`).  
+
+2. Point to the code where we can see a module.  
+
+3. Explain the flow of execution for handling the `/test` command. What methods are invoked? In the explanation, use the terms: dispatch, module, request, response, JSON.  
+
+4. Explain how a lot of the bot code is the creation of JSON objects. Point out a place in the code where an object is created.  
+
+5. Explain the relationship between Node, Express Server, and npm.  
+
+6. 
