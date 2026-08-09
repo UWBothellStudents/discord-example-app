@@ -153,7 +153,9 @@ For example, Discord can receive this JSON response and display its `content` as
 }
 ```
 
-The bot code usually creates the response as a **JavaScript object literal**, such as `commands/test.js` does, and Express serializes it as JSON when `res.send(...)` sends the HTTP response. JavaScript object literals resemble JSON but allow features JSON does not, including unquoted property names, single-quoted strings, constants, expressions, and shorthand properties. For example, if a variable named `content` exists, `{ content }` is shorthand for `{ content: content }`.
+The bot code usually creates the response as a **JavaScript object literal**, such as in the method `handleCommand` in `commands/test-button.js`. The method is almost entirely the creation of an object. Then, when we call `res.send(...)`, Express (the web sever  provided by Node) serializes the object as fully proper JSON and sends it in the HTTP response.  
+
+JavaScript object literals resemble JSON but allow features JSON does not, including unquoted property names, single-quoted strings, constants, expressions, and shorthand properties. For example, if a variable named `content` exists, `{ content }` is shorthand for `{ content: content }`.
 
 Reference: [MDN: Working with JSON](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON)
 
