@@ -7,14 +7,14 @@ You should have a very simple Discord bot working. Now you will explore the code
 * Analyze the architecture and design of your Discord bot.  
 
 **Deliverables:**  
-* Two snapshots of the Kanban board with Work Items tracking work.  
+* Two snapshots of the Kanban board in different stages with Work Items tracking work.  
 * A set of **hand-drawn** diagrams of the architecture. Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits one of the of the following:  
    - [Data flow diagram (DFD)](https://en.wikipedia.org/wiki/Data-flow_diagram)  
    - [Activity diagram](https://en.wikipedia.org/wiki/Activity_diagram)  
    - [Sequence diagram](https://en.wikipedia.org/wiki/Sequence_diagram) 
    - [System context diagram](https://en.wikipedia.org/wiki/System_context_diagram)   
    - [Network diagram](https://en.wikipedia.org/wiki/Computer_network_diagram) 
-
+* In class, you'll fill out a survey as you and a peer review your understanding of the work in this task.  
 
 **The goals are:**  
 * Understand Discord bot coding a bit better  

@@ -1,14 +1,19 @@
 # Task #3: Working in Parallel
 
 ## Overview
-You will move from the shared setup environment to your own personal environment. 
-
 In Task #1 you all shared one Codespace, one bot, and one URL. That doesn't scale
-once multiple people are writing code at the same time — someone's `npm start`
-will stomp on someone else's, and only one Interactions Endpoint URL can be
-registered at a time.
+once multiple people are writing code at the same time. Someone's `npm start` could stomp on someone else's, and only one Interactions Endpoint URL can be registered at a time.
 
-From here on:
+**Task:**  
+You will move from the shared setup environment to your own personal environment.
+
+**Deliverables:**  
+* Submit a screenshot of your new personal slash command on your own bot.  
+* Submit a screenshot of the team's unified Discord server that works with everyone's new commands.   
+* In class, you'll fill out a survey as you and a peer review your understanding of the work in this task.  
+
+
+**The goals are that from here on out:**  
 - Each student works on their own **Codespace instance**.
 - Each student works on their own **git branch** (that runs in their own Codespace).
 - Each student registers their own **Discord Application** (own bot, own token,
@@ -110,18 +115,25 @@ Same as before, `npm install` is only needed the first time in this Codespace;
    URL + `/interactions` into **Interactions Endpoint URL** and save.
 
 ## Step 7: Test with new command
-Create your own command `/test-<yourname>`.   
-1. Update the code in `apps.js` and `commands.js` to use your command. Code it up so that it responds with: `<yourname> has completed Task #2`.  
+Create your own command `/test-<yourname>`. Your completed bot code should respond with: 
+```
+<yourname> has completed Task #3.
+```  
+1. Add code to the `modular-archticture` directory for you new command.  
+   - Update `commands.js` with your new command.  
+   - Update `component-handler.js` and any other file as necessary.   
 2. Register your new set of commands.  
 3. Restart the bot service.
 
 In the shared team server, type `/` and find *your* bot's command in the
 list (it'll be tagged with your bot's name). Confirm it responds.
 
-You're now fully isolated from your teammates — different branch, different
-Codespace, different bot, different URL. Code and test freely.
+You're now fully isolated from your teammates. You have a different branch, different
+Codespace, different bot, different URL. You may now code and test freely!!
 
-> **Insights**: While it is common to frequently create and delete branches, in this project **KEEP** all your branches so that Stride can examine your individual work. **Never delete** any of your branches.
+> **Insights**: While it is common to frequently create and delete branches, in this project **KEEP** all your branches so that Stride can examine your individual work.  
+>
+> **Never delete** any of your branches.
 
 ---
 
@@ -166,7 +178,7 @@ keep them around for your next feature. Just make sure to `git pull` the
 latest `main` into your branch before starting new work, so you're not
 building on stale code. However, you are free to create a new branch if you like. Once you have the Codespace referencing the code in your new branch, you'll simply need to stop & start the service. There is no need to create a new Codespace instance, nor a Discord App, as these can be reused.
 
-## Q&A
+## Q & A
 
 **1. Why does each student need their own Codespace, branch, and Discord Application?**
 

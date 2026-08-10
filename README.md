@@ -1,14 +1,32 @@
-# Discord Bot Starter (JavaScript)
+# Task #1: Creating a Discord Bot 
+You will create a Discord Bot in JavaScript.  
+
+## Overview
+You will be creating a Discord Bot! Have fun!
+
+**Task:**  
+* Create a Discord Bot hosted in Codespaces using the template code provided in GitHub Classrooms.
+
+**Deliverables:**  
+* Submit a screenshot of your browser that has a completed `/challenge` command.  
+* Submit a screenshot of the Kanban board with a work item in the backlog.  
+* In class, you'll fill out a survey as you and a peer review your understanding of your work in this task.  
+
+## Introduction 
 This README describes the project and provides a set of instructions for creating a simple Discord bot.
 You will complete **Task #1** as a group. Individuals are responsible for understanding every part of the technology,
 and every student will be required to work on their own in future tasks.
-There is a **Q&A section** in the Task 3 materials that students need to be able to answer.
+There is a **Q&A section** with questions that each student needs to be able to answer.
 
 The instructions below will create a minimal Discord bot built with Discord's **HTTP Interactions** model developed in 
 **GitHub Codespaces**. This mirrors [Discord's official quick-start guide](https://docs.discord.com/developers/quick-start/getting-started),
-but swaps their local-machine + `ngrok` setup with Codespaces.
+but swaps their local-machine + `ngrok` setup with Codespaces.  
 
-## The mental model, in plain terms
+> **IMPORTANT**: The template code contains two separate implementations for a Discord bot. For this task, you'll be using the code in the directory `orig`.  
+
+The code provides a `/challenge` command that is a basic rock-paper-scissors-style Discord app written in JavaScript. The code was taken from the [getting started guide](https://discord.com/developers/docs/getting-started).  
+
+### The mental model
 
 - **Discord's servers** are where a person types slash commands such as `/test` in a channel.
 - Discord doesn't run your code for you. Instead, it sends an **HTTP request** to the `bot` using a URL you provide and waits for your code to respond.
@@ -16,7 +34,7 @@ but swaps their local-machine + `ngrok` setup with Codespaces.
    - This means your bot only works **while your server is running** and its URL is reachable via a `public` port. If you stop the app or close the Codespace, `/test` will fail until you start the bot again.
 - **discord-interactions** (the `npm package` this project uses) handles the security handshake for you: verifying that a request really came from Discord, and answering Discord's periodic "are you alive?" (`PING`) check.
 
-## Project structure
+### Project structure
 Below is a basic overview of the project structure:
 
 ```
@@ -55,9 +73,9 @@ This will help you setup your environment with sample code.
 We need to open the repo on Codespaces...  
 1. On the GitHub site, open your Git repo. If needed, select `<> Code` in the navigation bar.
 2. In the body of the page, select `<> Code` and select the `Codespaces` tab.
-3. Select the `+` to create a Codespace on main.  
+3. Select the `+` to create a Codespace on `main`.  
 
-> **VS Code client**: It should be possible to do this in the VS Code local client, but in Stride's first attempt, the VS Code client would not allow a public port. For those interested in trying...  
+> **VS Code client**: It should be possible interact with the Codespaces instance through the VS Code local client, but the setup is more involved. For those interested in trying...  
 > *  In VS Code, install the **GitHub Codespaces** extension if you don't have it.  
 > * Command Palette (`Cmd/Ctrl+Shift+P`) → **Codespaces: Create New Codespace** → pick this repo/branch. VS Code will connect to it like a remote window.  
 
@@ -88,18 +106,23 @@ Now create the `.env` file...
 ![Copy Install Link](resources/discord_install_link.png)  
 
 ### 4.  Register your slash commands
-Open a Terminal window and type in these two commands.
+Before you can do much of anything, you need to have all the Node modules installed. 
+
+Open a Terminal window and type in:
 ```bash
 npm install
+```
+Now you should have a directory named `node_modules` and you can register your slash commands with Discord. You only need to do this once. Type in:
+```bash
 npm run register
 ```
 The `npm install` should be required only when creating the Codespace instance this first time. Stopping and restarting the same Codespace won't require you to repeat the command.
 
 The entire container is persisted, so if you enter the same codespace again, all your files will be there, including the `node_modules` folder. The node_modules folder contains all the modules needed to run your project and will persist even though the files are not checked into the repo. It's just a folder on the remote disk. You can stop and restart a Codespace without losing the changes that you make to your project. So as long as you're reopening the same Codespace (via "Resume codespace" or from github.com/codespaces), your installed packages will still be there.
 
-The `npm run register` command should result in the following terminal output: 
+The `npm run register` command should result in something similar to the following output: 
 ```
-Registered 1 command(s): test.
+Registered 4 command(s): test, test-btn, test-modal, challenge
 Global commands can take up to an hour to show up the first time.
 ```
 
@@ -117,7 +140,7 @@ The above command should output: `Listening on port 3000`.
 
 ![Public port context menu](resources/discord_public_port.png)  
 
-If the menu option is not available, it is because there are policies or restrictions on your environment that prevent it. In that case, may need to use a public tunnel such as **ngrok** or **Cloudflare Tunnel**. 
+If the menu option is not available, it is likely because there are policies or restrictions on your environment that prevent it. In that case, may need to use a public tunnel such as **ngrok** or **Cloudflare Tunnel**. 
 
 A private port will not work because Discord needs access to the bot. 
 
@@ -138,12 +161,12 @@ Discord bot is running. Use /interactions for Discord callbacks.
 https://your-codespace-name-3000.app.github.dev/interactions
 ```
 
-3. Click **Save Changes**. Discord immediately sends a test `PING` — if `app.js` is running, this succeeds automatically (handled by `verifyKeyMiddleware`). If it fails, confirm the app is running and the port is public, then try saving again.  
+3. Click **Save Changes**. Discord immediately sends a test `PING` to verify a response. If the server is running the save should work. If it fails, confirm the app is running and the port is public, then try saving again.  
 
 ### 8. Test it
 You may need to refresh your Discord site, or just wait a bit. Make sure that you have the Codespaces bot running (listening on port 3000).   
 
-In your Discord test server, type `/test`. The bot should reply "hello world 👋". The emoji will be random.   
+In your Discord test server, type `/test`. The bot should reply "hello world 👋". (The emoji will be random.)   
 
 ### 9. GitHub Settings
 If you created the Git project via GitHub Classroom, and you added team members from there, then the permissions should be good-to-go. However, if for whatever reason, this is not the case, then you need to make sure that the professor and all team members have Write access to the repo.  
@@ -155,17 +178,35 @@ If you created the Git project via GitHub Classroom, and you added team members 
 
 ![Kanban Board](resources/discord_kanban_project.png)  
 
+## Troubleshooting  
+ISSUE: **The `npm run register` command fails**  
+> * Be sure to read the specific failure message for clues!   
+> * Verify that `.env` has all the values set correctly. If you regenerated a token in the Developer portal, you'll need to use the new token. 
+> Did you run `npm install`?  
+> Does `package.json` have the correct path to the 'register-commands.js' file?  
 
-## Adding your own commands
-1. Add a new command object to `ALL_COMMANDS` in `commands.js`, then re-run `npm run register`.
-2. Add a matching `if (name === '...')` branch inside the `/interactions` handler in `app.js`.
-3. Restart the server (or just let `npm run dev` auto-restart it on save).
+ISSUE: **I can't start the server due to: Error: listen EADDRINUSE: address already in use :::3000**  
+> This can happen sometimes when your AI agent started the server previously and it is still running. You can manually kill the server with two separate commands. The first is to list processes and find the process ID (PID). The second is to kill the process with that PID.  
+```
+lsof -i :3000
+kill -9 <PID>
+```
 
-## Troubleshooting
-- **Interactions Endpoint URL won't save** → the app isn't running, or the port isn't public. Check both.
-- **401 / invalid signature errors** → double-check `DISCORD_PUBLIC_KEY` in `.env` matches the Developer Portal exactly, and make sure no other middleware (like `express.json()`) runs before `verifyKeyMiddleware` on the `/interactions` route.
-- **Command doesn't show up in Discord** → global commands can take up to an hour on first registration; register to a single guild for near-instant testing (see the commented note in `register-commands.js`).
-- **Bot stopped responding after a while** → your Codespace probably went idle/stopped. Reopen it and run `npm start` again.
+
+ISSUE: **The interactions Endpoint URL won't save**  
+> The can be caused when the app isn't running, or the port isn't public. Check both.  
+
+ISSUE: **Command doesn't show up in Discord**   
+> * Sometimes it takes a while for the command to become available.  
+> * Sometimes you need to refresh the Discord page in your browser.  
+> * You may need to re-register your commands with: `npm run register`.  
+
+ISSUE: **The bot didn't respond in time to the slash command**  
+> * Most likely the server isn't running. Verify that your Codespace instance is running.  
+> * Verify that your bot server is using a `public` port.  
+> * Verify that your port is reachable in the browser.  
+> * Perhaps you didn't add the bot to the Discord server.  
+
 
 ## Next steps for learning more
 - Add more commands by using the Examples provided in the examples folder.  
@@ -173,20 +214,18 @@ If you created the Git project via GitHub Classroom, and you added team members 
 - [discord-interactions-js on GitHub](https://github.com/discord/discord-interactions-js) has more usage examples.
 
 
-## Examples Folder
-This directory contains a basic rock-paper-scissors-style Discord app written in JavaScript, built for the [getting started guide](https://discord.com/developers/docs/getting-started).
-
-
 ## Applying Changes
-If you changed bot behavior or code in app.js or utils.js: stop the running process and start it again.
-* Locally: Ctrl+C, then run `npm start`
-* Or, if you want auto-restarts during development: `npm run dev`
-If you changed slash commands in commands.js: run `npm run register` again so Discord updates the command list.
+If you changed bot behavior, stop the running process and start it again.  
+> In the Terminal, type in `Ctrl+C` to stop the server, then `npm start` to start it again. 
+
+> Note: if you want auto-restarts during development, you can use an altnerative way to start the server: `npm run dev`  
+
+If you changed the set of slash commands you want: run `npm run register` again so Discord updates the command list.
    - Code changes: a restart is required (stop with Ctrl+C, then start with `npm start`)
    - Slash command changes require re-registering
 The bot will not magically pick up new code until the server restarts, and Discord command updates can take a little time to appear.
 
-# Q&A
+# Q & A
 **1. What is Codespaces? How does it relate to a git repository?**
 
 Codespaces is a full development environment that runs in the cloud instead of on your own laptop. 
@@ -226,7 +265,7 @@ You'll also see a **`node_modules`** folder appear after `npm install`. This is 
 
 **6. What is an Express server?**  
 
-Express is a lightweight web framework for Node.js that makes it easy to build servers that handle HTTP requests.
+`Express` is a lightweight web framework for `Node.js` that makes it easy to build servers that handle HTTP requests.
 
 The Express server will receive HTTP requests, decide what to do based on the URL/method, and send back an HTTP response.
 
@@ -248,3 +287,6 @@ It is a process listening on a network port for incoming requests.
 A bot server is the actual running program that listens on a port and waits for Discord to send it interaction requests. The server code then figures out how to respond and sends that response back. It's called a "server" in the precise technical sense: a process listening on a network port for incoming requests.
 
 A bot server is different from the "bot" itself, which refers to the Discord-facing identity (the member entry in your test server). The bot server is the code powering that identity behind the scenes. If the bot server isn't running (or its port isn't public), the bot will still *appear* online-looking in the member list depending on settings, but it won't actually respond to any slash commands, because nothing is there to answer Discord's requests.
+
+**9. What is the file `.gitignore`?**  
+It is a `git` file that contains information about what file **NOT** to sync to the remote repository in the cloud. It is important to NOT sync `.env` and all the modules in the `node_modules` directory installed by Node.js.  
