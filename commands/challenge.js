@@ -9,8 +9,52 @@ import { capitalize, DiscordRequest, getRandomEmoji } from '../utils.js';
 export const ACCEPT_BUTTON_PREFIX = 'accept_button_';
 export const SELECT_CHOICE_PREFIX = 'select_choice_';
 
+/* THE COMMAND */
+export const command = {
+  name: 'challenge',
+  description: 'Challenge a user to rock paper scissors',
+  type: 1,
+  integration_types: [0, 1],
+  contexts: [0, 1, 2],
+  options: [
+    {
+      name: 'choice',
+      description: 'Your move for the challenge',
+      type: 3,
+      required: true,
+      choices: [
+        { name: 'Rock', value: 'rock' },
+        { name: 'Paper', value: 'paper' },
+        { name: 'Scissors', value: 'scissors' },
+        { name: 'Cowboy', value: 'cowboy' },
+        { name: 'Virus', value: 'virus' },
+        { name: 'Computer', value: 'computer' },
+        { name: 'Wumpus', value: 'wumpus' },
+      ],
+    },
+  ],
+};
+
+// In Memory structure of all the active games.
+// Active games are indexed by a gameId and have { id:<value> objectName:<choice> }
 const activeGames = {};
 
+/*  Helper functions of in-memory games */
+function createGame(gameId, game) {
+  activeGames[gameId] = game;
+}
+
+function getGame(gameId) {
+  return activeGames[gameId];
+}
+
+function deleteGame(gameId) {
+  delete activeGames[gameId];
+}
+
+// RPS == Rock Paper Scissors
+// Each choice has a description property. The other properties are the choices that
+// will lose to the current choice. Example: "rock crushes scissors".
 const RPSChoices = {
   rock: {
     description: 'sedimentary, igneous, or perhaps even metamorphic',
@@ -70,6 +114,7 @@ function getShuffledOptions() {
     .sort(() => Math.random() - 0.5);
 }
 
+// Gets the string of the results of the game between the two players
 function getResult(playerOne, playerTwo) {
   let result;
 
@@ -94,18 +139,6 @@ function getResult(playerOne, playerTwo) {
     : `<@${result.win.id}>'s **${result.win.objectName}** ${result.verb} <@${result.lose.id}>'s **${result.lose.objectName}**`;
 }
 
-function createGame(gameId, game) {
-  activeGames[gameId] = game;
-}
-
-function getGame(gameId) {
-  return activeGames[gameId];
-}
-
-function deleteGame(gameId) {
-  delete activeGames[gameId];
-}
-
 function getWebhookEndpoint(req) {
   const applicationId = process.env.DISCORD_APPLICATION_ID;
 
@@ -116,31 +149,8 @@ function getWebhookEndpoint(req) {
   return `webhooks/${applicationId}/${req.body.token}/messages/${req.body.message.id}`;
 }
 
-export const command = {
-  name: 'challenge',
-  description: 'Challenge a user to rock paper scissors',
-  type: 1,
-  integration_types: [0, 1],
-  contexts: [0, 1, 2],
-  options: [
-    {
-      name: 'choice',
-      description: 'Your move for the challenge',
-      type: 3,
-      required: true,
-      choices: [
-        { name: 'Rock', value: 'rock' },
-        { name: 'Paper', value: 'paper' },
-        { name: 'Scissors', value: 'scissors' },
-        { name: 'Cowboy', value: 'cowboy' },
-        { name: 'Virus', value: 'virus' },
-        { name: 'Computer', value: 'computer' },
-        { name: 'Wumpus', value: 'wumpus' },
-      ],
-    },
-  ],
-};
 
+/* COMMAND HANDLER */
 export function handleCommand(req) {
   const { id, data } = req.body;
   const userId = req.body.member?.user?.id || req.body.user?.id;
@@ -190,6 +200,7 @@ export function handleCommand(req) {
   };
 }
 
+/* COMPONENT HANDLER */
 export function handleComponent(componentId, req) {
   if (componentId.startsWith(ACCEPT_BUTTON_PREFIX)) {
     const gameId = componentId.replace(ACCEPT_BUTTON_PREFIX, '');

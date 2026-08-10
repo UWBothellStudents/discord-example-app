@@ -8,12 +8,13 @@ You should have a very simple Discord bot working. Now you will explore the code
 
 **Deliverables:**  
 * Two snapshots of the Kanban board in different stages with Work Items tracking work.  
-* A set of **hand-drawn** diagrams of the architecture. Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits one of the of the following:  
+* A set of **hand-drawn** diagrams of the architecture. Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits one of the of the following. Coordinate with team members so that there are **no duplicates**.    
    - [Data flow diagram (DFD)](https://en.wikipedia.org/wiki/Data-flow_diagram)  
    - [Activity diagram](https://en.wikipedia.org/wiki/Activity_diagram)  
    - [Sequence diagram](https://en.wikipedia.org/wiki/Sequence_diagram) 
    - [System context diagram](https://en.wikipedia.org/wiki/System_context_diagram)   
    - [Network diagram](https://en.wikipedia.org/wiki/Computer_network_diagram) 
+* Each diagram is agumented with a two paragraph, typed description that tells its story with words to inform the viewer  
 * In class, you'll fill out a survey as you and a peer review your understanding of the work in this task.  
 
 **The goals are:**  
@@ -22,7 +23,8 @@ You should have a very simple Discord bot working. Now you will explore the code
    - What is an Express Server and how is it used in our implementation?   
    - What is JSON and how does that play a role?  
 * Adopt a feature-based, modular organization with co-located command logic to make the bot more extensible  
-* Explain design terms and point to specific code that correlates  
+* Explain design terminology and point to specific code that correlates  
+* Create diagrams that illustrate architecture  
 
 The bot has been be refactored from a monolithic interaction handler into a modular, feature-based architecture. With the changes, each slash command will encapsulate (or co-locate) its command definition, command handler, component handlers, modal handlers, and command-specific state or business logic in a dedicated module (file). Central dispatchers route incoming Discord interactions to the appropriate command module.
 
@@ -119,18 +121,6 @@ Discord expects a response within 3 seconds, or it shows "This interaction faile
 
 **`custom_id` is how buttons/menus "remember" context**  
 Since HTTP requests don't carry memory, developers embed identifying info directly into a button's `custom_id` (e.g. `"delete_task_42"`) so that when it's clicked, the bot can parse that string back out and know exactly what to do. There is no database lookup required for simple cases.
-
-## Rock-Paper-Scissors Sequence
-To help explain 
-![Rock Paper Scissors Squence Diagram](resources/discord-rps-sequence.png)
-
-There are a few things worth explaining:
-
-**How does User #2's choice stay hidden from User #1?** This is the trickiest part of the game design. When User #2 clicks "Accept," the bot doesn't just reveal a text box — it typically responds with an **ephemeral**<sup>[2]</sup> message (a response only the clicking user can see) containing buttons or a dropdown for rock/paper/scissors. This is a meaningful Discord feature worth noting: response data can include a flag that makes a message private to just one user, which is exactly how you'd keep a "secret choice" secret in a public channel.
-
-**Why two separate interactions?** Notice the diagram has two full round trips — one for the initial slash command, one for the accept/choice. Each is its own independent HTTP request/response cycle. The bot has to persist the game state (who challenged, their hidden choice) somewhere between those two requests, since nothing carries over automatically. Servers can store temporary state (in memory, a database, or a cache) between interactions.<sup>[3]</sup>
-
-**The final update goes to *both* browsers from one bot response.** The bot doesn't send two separate messages. The bot sends one updated message object back to Discord Server, and Discord Server broadcasts that render to everyone viewing the channel, including both users. 
 
 ## JSON
 JSON (JavaScript Object Notation) is a text format for exchanging structured data. It may be stored in a `.json` file or sent in an HTTP request or response. Despite its name, JSON is language-independent.

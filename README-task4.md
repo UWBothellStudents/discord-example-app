@@ -1,9 +1,10 @@
-# Task #4: Adding a Larger Feature
+# Task #4: A Larger Feature
 
 ## Overview
-blah 
+Each team member will develop a non-trivial feature and integrate it into the project.
 
 **Task:** 
-* blah  
+*  Develop a non-trivial feature
 
 **Deliverables:**  
+* 

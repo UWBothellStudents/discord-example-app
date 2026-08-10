@@ -10,8 +10,8 @@ You will move from the shared setup environment to your own personal environment
 **Deliverables:**  
 * Submit a screenshot of your new personal slash command on your own bot.  
 * Submit a screenshot of the team's unified Discord server that works with everyone's new commands.   
+* Create a Git Tag v1.0 with all the team members' contributions.
 * In class, you'll fill out a survey as you and a peer review your understanding of the work in this task.  
-
 
 **The goals are that from here on out:**  
 - Each student works on their own **Codespace instance**.
