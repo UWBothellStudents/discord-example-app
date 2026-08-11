@@ -12,6 +12,10 @@ You will be creating a Discord Bot! Have fun!
 * Submit a screenshot of the Kanban board with a work item in the backlog.  
 * In class, you'll fill out a survey as you and a peer review your understanding of your work in this task.  
 
+**Goals:**  
+* Learn out to create a Discord bot hosted in Codespaces  
+* Learn about web development technologies  
+
 ## Introduction 
 This README describes the project and provides a set of instructions for creating a simple Discord bot.
 You will complete **Task #1** as a group. Individuals are responsible for understanding every part of the technology,
@@ -191,8 +195,6 @@ ISSUE: **I can't start the server due to: Error: listen EADDRINUSE: address alre
 lsof -i :3000
 kill -9 <PID>
 ```
-
-
 ISSUE: **The interactions Endpoint URL won't save**  
 > The can be caused when the app isn't running, or the port isn't public. Check both.  
 

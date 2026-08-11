@@ -7,9 +7,9 @@ Each team member will develop a non-trivial feature and integrate it into the pr
 *  Identify bugs, gaps, and technical debt in your bot and start closing the gaps
 
 **Deliverables:**  
-You are done with Task 5 if you have conducted an analysis of limitations and weaknesses in your assigned bot by:
-1. publishing a report to the main group repository (everyone from the group should contribute to a single report) and  
-2. creating user stories drawing from both the problems you've found and any new ideas for improving your bot that arise through this process.  
+You are done with Task 5 if you have conducted an analysis of limitations and weaknesses in your assigned bot and completed the following:
+1. Publish `task5-report.md` to the main group repository (everyone from the group should contribute to this single report). Each person should have their own dedication section that has their name. Example: `## Stride's Section`   
+2. Create user stories drawn from both the problems you've found and any new ideas for improving your bot that arise through this process.  
 3. Create a v2.0 Tag in Git  
 
 No artifact turned into Canvas is required. Stride will grade the state of your git repository and project board.  
@@ -35,3 +35,36 @@ No artifact turned into Canvas is required. Stride will grade the state of your 
 * Think back to when you were writing the bot. Did you cut any corners or implement something quick and dirty, planning to come back to it later?  
 * Think like a bad actor: what happens if you try to break your bot?
 * Feel free to use AI tools as a tutor or source for debugging any issues that come up, however you are responsible for the content you turn in.  
+
+## Tests
+* You should have a folder named `test`.   
+* Files in that folder that have tests should be named: `*.test.js`.   
+* run the tests with `node --test` in the terminal window.  
+
+```javascript
+
+import test from 'node:test';
+import assert from 'node:assert/strict';
+
+import {
+  myMethodToTest,
+} from '../commands/my_command.js';
+
+test('sample test of myMethodToTest', () => {
+  assert.equal(myMethodToTest(), 1);
+});
+```
+
+You could also modify `package.json` to have:
+```json
+"scripts": {
+  "test": "node --test",
+  "test:coverage": "node --test --experimental-test-coverage"
+}
+```
+The code coverage feature is an experimental feature available in node version 20+.  
+
+Then you can do: `npm run test:coverage` or just `npm test`.
+
+
+
