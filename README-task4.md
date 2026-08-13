@@ -19,3 +19,5 @@ Each team member will develop a non-trivial feature and integrate it into the pr
 **Steps:**  
 1. As a group, brainstorm some Discord bot features.  
 2. Assign one or more significant features to each team member.  
+3. Break up Feature into smaller User Stories.  
+4. Use AI to develop and Test.  
