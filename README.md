@@ -32,7 +32,7 @@ The code provides a `/challenge` command that is a basic rock-paper-scissors-sty
 
 ### The mental model
 
-- **Discord's servers** are where a person types slash commands such as `/test` in a channel.
+- **Discord** is where a person types slash commands such as `/test` in a channel. These commands go the the Discord Servers.  
 - Discord doesn't run your code for you. Instead, it sends an **HTTP request** to the `bot` using a URL you provide and waits for your code to respond.
    - This may be different from bots you may have seen elsewhere that stay constantly connected over a websocket (the "gateway" model). We are using a stateless request/response model, like a tiny website.  
    - This means your bot only works **while your server is running** and its URL is reachable via a `public` port. If you stop the app or close the Codespace, `/test` will fail until you start the bot again.

@@ -7,6 +7,7 @@ Each team member will develop a non-trivial feature and integrate it into the pr
 *  Develop a non-trivial feature
 
 **Deliverables:**  
+* Submit the list generated during brainstorming.  
 * Submit a screenshot of the newly added User Stories in the Kanban board. (??? or do I just find them in the Project board??? ) 
 * Features are implemented (with AI help) in your own branch and merged into `main` using one or more `Pull Requests`.   
 * Features have tests (using AI help) that run with `npm test`.  
