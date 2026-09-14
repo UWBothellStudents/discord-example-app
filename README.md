@@ -273,14 +273,17 @@ The Express server will receive HTTP requests, decide what to do based on the UR
 
 Without a framework, handling raw HTTP requests in Node is verbose and repetitive (manually parsing URLs, methods, headers, etc.). Express wraps that in a simple, readable API. In your bot project, this is the code can be found in `app.js`. 
 
-**7. How do you start and stop the bot server?**  
+**7. How do you Stop the bot server? How do you stop you Codespaces instance?**  
 
-Start with `npm start` and stop with `Ctrl+C`.
+Re: Bot Server: Start with `npm start` and stop with `Ctrl+C`.
 
 - **Start:** run `npm start` in the terminal. This runs whatever command is defined under `"start"` in `package.json` (in this project, it launches `app.js`, which is an Express server), and you should see `Listening on port 3000`.
 - **Stop:** with the terminal focused, press `Ctrl+C`. This sends an interrupt signal that ends the running process. You'll get your terminal prompt back once it's stopped.
 
-You need to stop and restart the server any time you change code in `app.js` or `utils.js` because the server doesn't automatically reload; it just keeps running whatever code was loaded when it started. However, if you use `npm run dev` to start the server instead, it auto-restarts for you whenever you save code. This can be handy (but perhaps overkill) while actively coding.
+You need to stop and restart the server any time you change code in `app.js` or `utils.js` because the server doesn't automatically reload; it just keeps running whatever code was loaded when it started. However, if you use `npm run dev` to start the server instead, it auto-restarts for you whenever you save code. This can be handy (but perhaps overkill) while actively coding.  
+
+To stop your Codespaces instance, use the `Command Palette` (via Ctrl+Shift+P on Windows). Then, type in `Codespaces: Stop Codespaces` (or you can type in just enough to see the option and then select it). Note that developers get charged money for how long a Codespaces instance is running. Students should get a good portion of this fee waived so long as you use your `UW Google ID` in association with GitHub.  
+
 
 **8. What is a "bot server"?**  
 
