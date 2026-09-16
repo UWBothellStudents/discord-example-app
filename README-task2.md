@@ -4,11 +4,11 @@
 You should have a very simple Discord bot working. Now you will explore the code found the in `commands` and `module-architecture` folders.  
 
 **Task:** 
+* Customize Kanban board and Project Insights.  
 * Analyze the architecture and design of your Discord bot.  
 
 **Deliverables:**  
-* Two snapshots of the Kanban board in different stages with Work Items tracking work.  
-* A set of **hand-drawn** diagrams of the architecture. Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits one of the of the following. Coordinate with team members so that there are **no duplicates**.    
+* A set of **hand-drawn** diagrams of the architecture/design. They can be high level architecture or specific to the design of a slash command (feature). Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits only one diagram. Each person submits a different type of diagram. Coordinate with team members so that there are **no duplicates**.    
    - [Data flow diagram (DFD)](https://en.wikipedia.org/wiki/Data-flow_diagram)  
    - [Activity diagram](https://en.wikipedia.org/wiki/Activity_diagram)  
    - [Sequence diagram](https://en.wikipedia.org/wiki/Sequence_diagram) 
@@ -18,6 +18,7 @@ You should have a very simple Discord bot working. Now you will explore the code
 * In class, you'll fill out a survey as you and a peer review your understanding of the work in this task.  
 
 **The goals are:**  
+* Have a better Kanban board and a Burn Down graph in your Project.  
 * Understand Discord bot coding a bit better  
    - What are HTTP requests and responses?  
    - What is an Express Server and how is it used in our implementation?   
@@ -40,6 +41,44 @@ Useful terms for this design include:
 - **Separation of concerns** — `app.js` handles HTTP/Discord routing while command modules handle feature behavior.
 - **Reduced coupling** — commands depend less on unrelated parts of the application.
 - **Improved cohesion** — closely related code is kept together.
+
+## Project Updates
+Only one person in your group needs to do this. You can do it as a group, or just designate one person to this the following:
+1. Update Kanban board to have 5 Lanes  
+2. Update the Estimation field  
+3. Add a new field "User Story Type"  
+4. Create Burn Down Chart
+
+### Update Kanban Board
+Update the Kanban board to have 5 Lanes: Backlog, Specify, Implement, Validate, Done.  
+* Go to the Project and click on the "Backlog" Tab.  
+* On the right, there is a (gear) "View" button. Click on that and select "Table."  
+* In the table, there is a column header named "Status". 
+  - Click on "..." next to the "Status" header.  
+  - Click on "Field Settings..."  
+  - You should see a list of Options. Edit them so that we get a Kanban board as shown below.  
+
+![Kanban Board with 5 Lanes](resources/discord_custom_kanban.png)  
+
+### Update Field
+Rename the "Estimation" field to be "Estimation (remaining)".  
+* Be in *Table* view. Click on the "..." next to "Estimation", select "Field Settings..." and rename it.  
+
+### Add User Story Type
+Add a field named "User Story Type".  
+* In the *Table* view, scroll all the way to the right and click the "+".  
+* At the top, click "+ Add Field"  
+* Click on the link "Create a project field"  
+* Name it "User Story Type"  
+* Field Type will be "Single Select"  
+* Add the options: [Epic, Feature, User Story]  
+
+### Create Burn Down
+Do the following to create a Burn Down graph:  
+* Click on the "Insights" button.  
+* You should see a "Burn Up" chart. Click on "Configure"  
+* Change `Y-Axis` to "Sum of a field"  
+* For `Y-axis field` select "Estimation (remaining)"  
 
 ## Running Modular Architecture
 It is easy to switch from the original implementation found in the `orig` folder to the `modular-architecture` folder. You simply need to edit `package.json` by replacing `orig` with `modular-architecture`.
@@ -265,21 +304,31 @@ Together, npm prepares and starts the project, Node executes it, and Express han
 
 **Registration** tells Discord that a command exists and describes its name, options, and other metadata. After the `package.json` scripts are switched to the modular architecture as described earlier, running `npm run register` starts `modular-architecture/register-commands.js`. That script gets the definitions collected in `ALL_COMMANDS` and sends them to Discord's API. Registration is needed after adding or changing a command definition, but it does not start the bot server.
 
-**Handling** happens later, whenever a user invokes a registered command. Discord sends an interaction request to the running server, and `app.js` plus `command-handler.js` route it to the appropriate command module. With the same script change in place, `npm start` starts the modular server. Registration defines the interface; handling implements its behavior.
+**Handling** happens later, whenever a user invokes a registered command. Discord sends an interaction request to the running server, and `app.js` plus `command-handler.js` route it to the appropriate command handler (which we could call a *module*).  `npm start` starts the server that is configured to dispatch requests to handlers.
 
 ### 7. What is middleware, and why does this bot use `verifyKeyMiddleware`?
 
 Middleware is code that runs during request processing before the final route handler completes its work. The `/interactions` route uses `verifyKeyMiddleware(process.env.PUBLIC_KEY)` to verify the cryptographic signature Discord attaches to each interaction request.
 
-If verification succeeds, processing continues and the handler can read `req.body`. If it fails, the request is rejected before any command logic runs. This prevents an unauthenticated sender from pretending to be Discord and invoking the bot's interaction endpoint. The public key is loaded from an environment variable so deployment-specific configuration is not hard-coded into the source.
+If verification succeeds, processing continues and the handler can read `req.body`. If it fails, the request is rejected before any command logic runs. This prevents an unauthenticated sender from pretending to be Discord and invoking the bot's interaction endpoint. The public key is loaded from an environment variable so deployment-specific configuration is not hard-coded into the source.  
 
-### 8. How does the modular design route button, select-menu, and modal interactions?
+> Do some research around where and how the method `verifyKeyMiddleware` is called. It could be beyond your current level to comprehend, so I've provided an answer below.  
 
-A component click or modal submission is a new HTTP request, not a continuation of the slash-command function. `app.js` first dispatches by interaction type:
+The method `post` in `app.js` is a method on an `Express` object. You, the developer, use the function to *register routes*. This means that you tell Express what to do when a POST request with a specific route is received. Our code says that when the webserver receives a request with the "/interactions" path, then it should call two functions (callbacks) that are provided as arguments. The arguments to `app.post` are a path and two functions. We've now entered into the realm of *functional programming*, which is a type of programming where functions are *first class citizens*.  
+
+The function `verifyKeyMiddleware` is not invoked for every request. Instead, it is called only once and it *returns* a function that is invoked on every "/interactions" request.  
+
+The third argument to `app.post` starts with `async function (req, res) {` and it is the definition of an anonymous function that takes two arguments. This anonymous function is invoked on every "/interactions" request.  
+
+### 8. How does the modular design route interaction requests/responses  that are related to a button, select-menu, or modal dialog?
+
+*Button* and *Select Menu* are components that have a specific type in their POST body. A modal dialog's submit also has its own type. When a component needs to take some action, a new HTTP request is issued. It is not a continuation of the slash-command function. 
+
+`app.js` first dispatches by interaction type:
 
 - `MESSAGE_COMPONENT` goes to `component-handler.js`.
 - `MODAL_SUBMIT` goes to `modal-handler.js`.
 
 These dispatchers read the interaction's `custom_id` and use it to select a handler imported from a command module. For example, `component-handler.js` maps `BUTTON_COMPONENT_ID` to the component handler in `commands/test-button.js`. Some challenge IDs contain changing context, so the dispatcher can match an ID prefix instead of requiring an exact match.
 
-This design keeps shared routing centralized while co-locating each feature's behavior in its command module. It also shows why `custom_id` values must be unique and stable enough for the dispatcher to recognize them.
+This design keeps shared routing centralized while co-locating each feature's behavior in its command handler. It also shows why `custom_id` values must be unique and stable enough for the dispatcher to recognize them.

@@ -5,7 +5,7 @@ You will create a Discord Bot in JavaScript.
 You will be creating a Discord Bot! Have fun!
 
 **Task:**  
-* Create a Discord Bot hosted in Codespaces using the template code provided in GitHub Classrooms.
+* Create a Discord Bot hosted in Codespaces using the template code provided in GitHub.
 
 **Deliverables:**  
 * Submit a screenshot of your browser that has a completed `/challenge` command.  
