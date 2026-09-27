@@ -8,17 +8,23 @@ You should have a very simple Discord bot working. Now you will explore the code
 * Analyze the architecture and design of your Discord bot.  
 
 **Deliverables:**  
-* A set of **hand-drawn** diagrams of the architecture/design. They can be high level architecture or specific to the design of a slash command (feature). Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits only one diagram. Each person submits a different type of diagram. Coordinate with team members so that there are **no duplicates**.    
-   - [Data flow diagram (DFD)](https://en.wikipedia.org/wiki/Data-flow_diagram)  
+* A set of **hand-drawn** diagrams of the architecture/design. They can be high level architecture or specific to the design of a slash command (feature). Take a picture of the paper with the diagram. It must be hand-drawn on paper. Each person submits only one diagram. Each person submits a different type of diagram (turn in the actual paper to the Instructor as well as the picture into Canvas). Coordinate with team members so that there are **no duplicates**. If there are 5 people on the team, then there should be two Sequence Diagrams, each depicting a different feature.    
+   
    - [Activity diagram](https://en.wikipedia.org/wiki/Activity_diagram)  
    - [Sequence diagram](https://en.wikipedia.org/wiki/Sequence_diagram) 
-   - [System context diagram](https://en.wikipedia.org/wiki/System_context_diagram)   
-   - [Network diagram](https://en.wikipedia.org/wiki/Computer_network_diagram) 
-* Each diagram is agumented with a two paragraph, typed description that tells its story with words to inform the viewer  
+   - [Use Case Diagram](https://agilemodeling.com/artifacts/useCaseDiagram.htm)  
+One of the following:  
+   a) [System context diagram](https://en.wikipedia.org/wiki/System_context_diagram)   
+   b) [Network diagram](https://en.wikipedia.org/wiki/Computer_network_diagram)  
+   c) [Data flow diagram (DFD)](https://en.wikipedia.org/wiki/Data-flow_diagram)  
+
+You can choose other diagrams with **instructor approval**.  
+
+* Each diagram is agumented with a two paragraph, typed description that tells its story with words to inform the viewer.  
 * In class, you'll fill out a survey as you and a peer review your understanding of the work in this task.  
 
 **The goals are:**  
-* Have a better Kanban board and a Burn Down graph in your Project.  
+* Have a better Kanban board in your Project.  
 * Understand Discord bot coding a bit better  
    - What are HTTP requests and responses?  
    - What is an Express Server and how is it used in our implementation?   
@@ -42,6 +48,42 @@ Useful terms for this design include:
 - **Reduced coupling** — commands depend less on unrelated parts of the application.
 - **Improved cohesion** — closely related code is kept together.
 
+## Process Explanation
+We are doing **Scrum** with a use of a **Kanban board for visualization**. This is because:  
+* we have project deadlines that map to Sprints.  
+* we are practicing process (planning, kickoff, estimation, standups, demo)  
+* we want to track progress to Done via a Burndown graph.  
+
+This means that:  
+* The Kanban board is customized to act as both the Product Backlog and Sprint Backlog.  
+* During Sprint Planning, Backlog items will be pulled over into the Sprint Backlog lane.  
+* During Sprint Kickoff, the sprint work items will be assigned to a person who will:  
+  - assure that there is a clear **Definition of Done** documented in the Work Item  
+  - break up the work item into **smaller tasks** (as needed). This could be simply adding more description to the one Work Item, or it could be the creation of more User Stories. It all depends on the size of the work.    
+  - **estimate** each work item. This will include the creation of **Unit Tests** and execution of **Smoke Tests**.   
+  - create a **Validation Work Item with Test Scenarios**. These Validation Work Items are to be **assigned to someone different**.  
+  - Each person should **commit** to the work assigned to them. A commitment means that the work load is acceptable and will be done on a schedule that allows the full team to succeed with the *Sprint's Deliverables*.    
+* Students will have WIP limits; no Lane WIP limits.  
+
+
+**Implementation**
+When a work item is implemented, the code is completed in the developer's personal branch named `<developer>-<feature>`.  
+
+The developer should create Unit Tests and complete Smoke Tests. Once those are done, the developer with initiate a **Pull Request**. A different person should review the code and merge into main.  
+
+**Validation**  
+It can be problematic to review one's own work, and we want to practice process & team coordination. Therefore, we will require that the Validation of a work item to be done by a different person. To help with the tracking, we will have a separate Work Item specific to Validation with its own time Estimate.  
+
+When a work item is in the Validation column, it is assumed to be in the *Tracking* state, waiting for its dependency work item to be fully implemented, checked in, and merged into `main`.  
+
+There needs to be communication from the Developer to the Validator so that the validation can be completed on-time and without delay. One should **over-communicate**: send email, document in the Validation work item, and verbally inform the Validator during Stand Up.  
+
+**Validation Failure**  
+It is possible that during Validation bugs are discovered. It could be that functionality is missing or something just doesn't work. In this case, create a new Work Item (issue) and label it as a Bug. 
+
+**Scrum - Stand Ups**  
+Because we meet only once per week and our Sprints are sometimes just one week long, students should **update the Kanban board outside of class**. Whenever the work is completed, update the item right away.  
+
 ## Project Updates
 Only one person in your group needs to do this. You can do it as a group, or just designate one person to this the following:
 1. Update Kanban board to have 5 Lanes  
@@ -50,8 +92,9 @@ Only one person in your group needs to do this. You can do it as a group, or jus
 4. Create Burn Down Chart
 
 ### Update Kanban Board
-Update the Kanban board to have 5 Lanes: Backlog, Specify, Implement, Validate, Done.  
+Update the Kanban board to have 5 Lanes: Product Backlog, Sprint Backlog, Implement, Validate, Done.  
 * Go to the Project and click on the "Backlog" Tab.  
+* Next to the columns, click the "..." and select "Edit details..." then rename the field and provide a proper description.  
 * On the right, there is a (gear) "View" button. Click on that and select "Table."  
 * In the table, there is a column header named "Status". 
   - Click on "..." next to the "Status" header.  
@@ -73,12 +116,12 @@ Add a field named "User Story Type".
 * Field Type will be "Single Select"  
 * Add the options: [Epic, Feature, User Story]  
 
-### Create Burn Down
-Do the following to create a Burn Down graph:  
-* Click on the "Insights" button.  
-* You should see a "Burn Up" chart. Click on "Configure"  
-* Change `Y-Axis` to "Sum of a field"  
-* For `Y-axis field` select "Estimation (remaining)"  
+### Creating a new Work Item
+I once had problems creating a new Work Item.  
+
+You can visit: `https://github.com/UWBothellStudents/<repo>/issues/new`  
+
+Then, on the right, assign it to a Project.  
 
 ## Running Modular Architecture
 It is easy to switch from the original implementation found in the `orig` folder to the `modular-architecture` folder. You simply need to edit `package.json` by replacing `orig` with `modular-architecture`.
